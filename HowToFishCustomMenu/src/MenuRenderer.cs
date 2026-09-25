@@ -53,6 +53,7 @@ namespace HowToFishCustomMenu
             DrawFeed(accent);
             DrawSpeedo(accent);
             DrawRaceHud(accent);
+            DrawBanner(accent);
             if (Time.unscaledTime < chaosBannerUntil)
             {
                 Text(new Rect(0, Screen.height * .18f, Screen.width, 90), chaosEvent, centre, accent);

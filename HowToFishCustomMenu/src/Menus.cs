@@ -28,6 +28,8 @@ namespace HowToFishCustomMenu
             m.Sub("KRAKEN WATER CAR", CarMenu);
             m.Sub("ISLAND TELEPORT", IslandMenu);
             m.Action("UNLOCK ALL [HOST]", () => Note(UnlockAll()), IsHostNow, NeedHost);
+            m.Sub("EXTRAS", ExtrasMenu);
+            m.Sub("BOSS SPAWNER", BossMenu);
             m.Sub("PLAYERS", PlayerListMenu);
             m.Sub("TROLL MENU", TrollMenu);
             m.Sub("FUN MENU", FunMenu);
@@ -327,7 +329,7 @@ namespace HowToFishCustomMenu
         }
         private Menu PlayerOptions(object p)
         {
-            var m = new Menu(Bridge.PlayerName(p).ToUpperInvariant());
+            var m = new Menu(Bridge.PlayerName(p).ToUpperInvariant()) { Targeted = true };
             m.Add(new Option { Kind = OptionKind.Action, Name = "PLAYER INFORMATION", OnSelect = () =>
             {
                 var t = Bridge.PlayerTransform(p);
@@ -376,7 +378,7 @@ namespace HowToFishCustomMenu
         private Menu TrollMenu()
         {
             if (trollMenu != null) return trollMenu;
-            var m = trollMenu = new Menu("TROLL MENU");
+            var m = trollMenu = new Menu("TROLL MENU") { Targeted = true };
             m.Add(new Option { Kind = OptionKind.Action, NameFn = () => "TARGET: " + (target != null ? Bridge.PlayerName(target).ToUpperInvariant() : "NONE"), OnSelect = CycleTarget });
             AddPlayerActions(m, () => target);
             m.Footer = "SPACE ON TARGET TO CYCLE PLAYERS";

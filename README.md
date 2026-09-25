@@ -62,6 +62,7 @@ Delete `BepInEx\plugins\HowToFishCustomMenu.dll`.
 | **F8** | Toggle fly |
 | **F9** | Toggle no clip |
 | **F10** | Get in / out of the water car |
+| **F11** | Load preset 1 |
 | *(unbound)* | Toggle god mode |
 
 To rebind: open **Settings → Keybinds**, press Space on a row, then press the new key. Backspace unbinds it and Esc cancels.
@@ -120,6 +121,16 @@ A floating oval circuit on the sea next to the island. It has red and white kerb
 ### 🏝️ Island Teleport & Unlock All
 - **Island Teleport** has one button per island. The game moves the whole lobby, like its own island travel [HOST].
 - **Unlock All** [HOST] unlocks every island, the boat and boat radar, the grill, all extra pockets, and 50 of every bait for every player.
+
+### ⭐ Extras
+- **Chat kill-feed:** as host, KRAKEN posts classic modded-lobby messages in the game's chat. Everyone sees them as **[Server]** messages, no mod needed: "KRAKEN // HOST ENABLED GOD MODE", "KRAKEN // Ryan GOT FISH PRISON!", boss alerts, and a welcome message when you load in. You can turn it off in Extras.
+- **Boss Spawner:** Bowhead Whale, Mutated Whale, Giant Piranha, The Old Pike, Goblin Shark and Spider Crab. Spawn one next to you or on a target, or start **Boss Rush**, where the next boss appears when the last one dies.
+- **Seagull Army / Albatross Squad:** a flock of item-stealing birds over a target or yourself.
+- **Auto-sell:** sell your held item or everything within 10m, or auto-sell dead fish near you. It uses the game's own sell code.
+- **Kill aura:** hits every creature within range (2–20m).
+- **Camera:** first person, **third person** (with a stand-in character, because the game removes your own body model), **free cam** (WASD, Space/Ctrl, Shift for speed), and **spectate target**.
+- **Presets:** save every toggle and slider to 3 preset slots. **F11** loads preset 1, and presets 2–3 can be bound in Keybinds.
+- **Menu sounds and startup banner:** COD-style hover and click sounds, and a big **KRAKEN LOADED** banner when you spawn.
 
 ### 💾 Saved Locations
 Quick **Save / Load Location** (F5 / F6) plus a list of named saved locations. They're saved to `BepInEx/config/kraken_locations.txt`, so they're still there after you restart the game.

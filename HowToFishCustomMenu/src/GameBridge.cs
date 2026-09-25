@@ -30,6 +30,23 @@ namespace HowToFishCustomMenu
         // jump (Space = select), mouse look, firing and hotbar scrolling are switched off.
         private static readonly string[] MenuBlockedActions = { "PlayerJump", "PlayerLook", "PlayerLeftClick", "PlayerRightClick", "InventoryScroll", "PlayerCrouch", "PlayerDrop", "PlayerPickUp", "InventoryNone", "ChangeBait" };
         private readonly List<object> pausedActions = new List<object>();
+        // Named groups of game input actions switched off by a feature (e.g. free cam).
+        private readonly Dictionary<string, List<object>> blockedGroups = new Dictionary<string, List<object>>();
+        public void BlockActions(string key, string[] names, bool on)
+        {
+            if (blockedGroups.TryGetValue(key, out var old))
+            {
+                foreach (var a in old) { try { InvokeAction(a, "Enable"); } catch (Exception) { } }
+                blockedGroups.Remove(key);
+            }
+            if (!on) return;
+            var input = GetMember(FindType("GameInfo"), "Input");
+            if (!(GetMember(input, "actions") is System.Collections.IEnumerable actions)) return;
+            var list = new List<object>();
+            foreach (var action in actions)
+                if (Array.IndexOf(names, GetMember(action, "name") as string) >= 0 && GetMember(action, "enabled") is bool en && en) { InvokeAction(action, "Disable"); list.Add(action); }
+            blockedGroups[key] = list;
+        }
         public void SetGameInputBlocked(bool blocked)
         {
             if (blocked)

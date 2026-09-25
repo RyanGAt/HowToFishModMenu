@@ -154,6 +154,7 @@ namespace HowToFishCustomMenu
             if (fishCannon && Host && !shown && Input.GetMouseButton(2) && Time.unscaledTime >= nextCannon) { nextCannon = Time.unscaledTime + .12f; LaunchFish(); }
             Patches.NoRecoil = noRecoil; Patches.NoCooldown = noCooldown; Patches.DamageMultiplier = damageMult;
             if (instantReload) Bridge.InstantReload();
+            try { TickCamera(); } catch (Exception ex) { Logger.LogWarning("Camera: " + ex.Message); }
             Bridge.UpdateWeaponMods(infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick);
         }
 
@@ -315,6 +316,8 @@ namespace HowToFishCustomMenu
         private void ResetEverything()
         {
             if (driving) ExitCar();
+            if (camMode != 0) SetCamMode(0);
+            killAura = bossRush = autoSellFish = false;
             StopFly();
             Bridge.SetNoClip(false); noClip = false;
             Bridge.ResetWeaponMods();

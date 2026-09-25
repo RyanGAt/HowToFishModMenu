@@ -48,6 +48,7 @@ namespace HowToFishCustomMenu
         public int Selected, Scroll;
         public Func<List<Option>> Dynamic; // rebuilt each time the page is drawn (player lists, searches)
         public string Footer = "";
+        public bool Targeted; // actions here act on the selected player (used by the chat kill-feed)
 
         public Menu(string title) { Title = title; }
 

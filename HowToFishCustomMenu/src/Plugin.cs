@@ -33,6 +33,7 @@ namespace HowToFishCustomMenu
             menuKey = Config.Bind("Keys", "MenuKey", KeyCode.Insert, "Opens/closes the mod menu");
             flySpeed = Config.Bind("Movement", "FlySpeed", 14f, "Fly speed");
             BindKeys();
+            BindPresets();
             Bridge = new GameBridge();
             Patches.Bridge = Bridge;
             Patches.SilentAimTarget = from =>
@@ -91,8 +92,8 @@ namespace HowToFishCustomMenu
             if (capturing != null) return;
             if (rows.Count == 0) { if (NavBack()) Back(); return; }
             bool up = NavUp();
-            if (up) menu.Selected = (menu.Selected - 1 + rows.Count) % rows.Count;
-            if (NavDown()) menu.Selected = (menu.Selected + 1) % rows.Count;
+            if (up) { menu.Selected = (menu.Selected - 1 + rows.Count) % rows.Count; PlaySound("Hover"); }
+            if (NavDown()) { menu.Selected = (menu.Selected + 1) % rows.Count; PlaySound("Hover"); }
             menu.Selected = Mathf.Clamp(menu.Selected, 0, rows.Count - 1);
             // Skip non-interactive labels in the direction of travel.
             for (int guard = 0; guard < rows.Count && rows[menu.Selected].Kind == OptionKind.Label; guard++)
@@ -100,7 +101,7 @@ namespace HowToFishCustomMenu
             var o = rows[menu.Selected];
             if (NavLeft()) Adjust(o, -1);
             if (NavRight()) Adjust(o, 1);
-            if (NavSelect()) Activate(o);
+            if (NavSelect()) { PlaySound("Click"); Activate(o); }
             if (NavBack()) { if (stack.Count == 0 && PadDown(p => p.buttonEast)) SetOpen(false); else Back(); }
         }
         private void Back() { if (stack.Count > 0) stack.Pop(); }
@@ -129,6 +130,7 @@ namespace HowToFishCustomMenu
                         break;
                     case OptionKind.Input: editing = o; break;
                 }
+                AnnounceOption(o);
             }
             catch (Exception ex) { Note(o.Name + " failed: " + ex.GetBaseException().Message); Logger.LogError(ex); }
         }
@@ -145,6 +147,7 @@ namespace HowToFishCustomMenu
             try { TickFeatures(); }
             catch (Exception ex) { Logger.LogWarning("Tick: " + ex.GetBaseException().Message + " @ " + ex.StackTrace); }
             try { TickSkySign(); } catch { }
+            try { TickAdditions(); } catch (Exception ex) { Logger.LogWarning("Extras: " + ex.GetBaseException().Message); }
             try { TickRace(); } catch { }
             try { TickCar(); } catch (Exception ex) { Logger.LogWarning("Car: " + ex.GetBaseException().Message); }
             // ESP refreshes on its own so a failure elsewhere can't blank it.

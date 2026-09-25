@@ -110,6 +110,9 @@ namespace HowToFishCustomMenu
             Row("NO CLIP", () => keyNoClip);
             Row("WATER CAR", () => keyCar);
             Row("GOD MODE", () => keyGod);
+            Row("LOAD PRESET 1", () => presetKeys[0]);
+            Row("LOAD PRESET 2", () => presetKeys[1]);
+            Row("LOAD PRESET 3", () => presetKeys[2]);
             m.Label("Controller: LB + D-PAD UP opens the menu");
             m.Footer = "SPACE ON A ROW, THEN PRESS THE NEW KEY";
             return m;
