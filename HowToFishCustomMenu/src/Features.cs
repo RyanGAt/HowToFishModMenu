@@ -314,6 +314,7 @@ namespace HowToFishCustomMenu
 
         private void ResetEverything()
         {
+            if (driving) ExitCar();
             StopFly();
             Bridge.SetNoClip(false); noClip = false;
             Bridge.ResetWeaponMods();

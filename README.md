@@ -61,6 +61,7 @@ Delete `BepInEx\plugins\HowToFishCustomMenu.dll`.
 | **F7** | Teleport to Sky Base |
 | **F8** | Toggle fly |
 | **F9** | Toggle no clip |
+| **F10** | Get in / out of the water car |
 | *(unbound)* | Toggle god mode |
 
 To rebind: open **Settings → Keybinds**, press Space on a row, then press the new key. Backspace unbinds it and Esc cancels.
@@ -107,8 +108,11 @@ Save / Load Location · Saved Locations · Sky Base · Spawn / Island · Water �
 *Destinations come from the island you're currently on.*
 
 ### ☁️ Sky Base
-Builds a floating base **180m above the island**: a glowing platform with railings, light pillars and a lookout tower. Teleport there with **F7** or from the menu, teleport back to the island, rebuild or remove it.
+Builds a floating island base **60m above the island**: a wooden deck with railings and glowing lights, a lounge corner, lamps, a lookout tower with spiral stairs, a diving board, a rocky underside with a glowing crystal, and a KRAKEN sign that always turns to face you. Teleport there with **F7** or from the menu, teleport back to the island, rebuild or remove it.
 *It's built on your own game, so only you can see it and stand on it. Friends without KRAKEN will fall.*
+
+### 🚗 KRAKEN Water Car
+Spawn an open-top convertible and drive it **across the water and onto land**. Controls: **W/S** gas and brake, **A/D** steer, **Shift** boost (about 230 km/h), **Jump** to hop. On a controller: **RT/LT** gas and brake, **left stick** to steer. A speedometer appears while you drive. **F10** gets you in and out and spawns the car if needed. Other players see you glide over the water; only KRAKEN users see the car itself.
 
 ### 💾 Saved Locations
 Quick **Save / Load Location** (F5 / F6) plus a list of named saved locations. They're saved to `BepInEx/config/kraken_locations.txt`, so they're still there after you restart the game.

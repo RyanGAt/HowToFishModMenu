@@ -42,7 +42,7 @@ namespace HowToFishCustomMenu
         private bool PadMenuComboHeld() => Pad != null && Pad.leftShoulder.isPressed;
 
         // ---------------- Keybinds ----------------
-        private ConfigEntry<KeyCode> keySave, keyLoad, keySkyBase, keyFly, keyNoClip, keyGod;
+        private ConfigEntry<KeyCode> keySave, keyLoad, keySkyBase, keyFly, keyNoClip, keyGod, keyCar;
         private ConfigEntry<KeyCode> capturing;
         private string capturingName;
 
@@ -53,6 +53,7 @@ namespace HowToFishCustomMenu
             keySkyBase = Config.Bind("Keys", "SkyBase", KeyCode.F7, "Teleport to the sky base (builds it if needed)");
             keyFly = Config.Bind("Keys", "ToggleFly", KeyCode.F8, "Toggle fly mode");
             keyNoClip = Config.Bind("Keys", "ToggleNoClip", KeyCode.F9, "Toggle no clip");
+            keyCar = Config.Bind("Keys", "Car", KeyCode.F10, "Get in / out of the KRAKEN water car (spawns it if needed)");
             keyGod = Config.Bind("Keys", "ToggleGodMode", KeyCode.None, "Toggle personal god mode (host)");
             LoadLocations();
         }
@@ -85,6 +86,7 @@ namespace HowToFishCustomMenu
             if (Hit(keySkyBase)) GoSkyBase();
             if (Hit(keyFly)) { if (fly) StopFly(); else fly = true; Note("FLY MODE [" + (fly ? "ON" : "OFF") + "]"); }
             if (Hit(keyNoClip)) { if (Bridge.SetNoClip(!noClip)) noClip = !noClip; Note("NO CLIP [" + (noClip ? "ON" : "OFF") + "]"); }
+            if (Hit(keyCar)) ToggleCar();
             if (Hit(keyGod)) { if (Host) { Patches.PersonalGod = !Patches.PersonalGod; Note("GOD MODE [" + (Patches.PersonalGod ? "ON" : "OFF") + "]"); } else Note("GOD MODE // " + NeedHost); }
         }
         private static bool Hit(ConfigEntry<KeyCode> k) => k.Value != KeyCode.None && Input.GetKeyDown(k.Value);
@@ -106,6 +108,7 @@ namespace HowToFishCustomMenu
             Row("SKY BASE", () => keySkyBase);
             Row("FLY MODE", () => keyFly);
             Row("NO CLIP", () => keyNoClip);
+            Row("WATER CAR", () => keyCar);
             Row("GOD MODE", () => keyGod);
             m.Label("Controller: LB + D-PAD UP opens the menu");
             m.Footer = "SPACE ON A ROW, THEN PRESS THE NEW KEY";
@@ -187,94 +190,6 @@ namespace HowToFishCustomMenu
                 return rows;
             };
             m.Footer = "SAVED TO BepInEx/config/kraken_locations.txt";
-            return m;
-        }
-
-        // ---------------- Sky base ----------------
-        // A platform built from local colliders high above the island. It exists on YOUR
-        // client (you can stand on it); players without KRAKEN won't see it and will fall.
-        private GameObject skyBase;
-        private const float SkyHeight = 180f;
-        private Vector3 SkyBaseCentre => IslandOrigin + Vector3.up * SkyHeight;
-
-        private void BuildSkyBase()
-        {
-            if (skyBase != null) return;
-            skyBase = new GameObject("KRAKEN_SkyBase");
-            skyBase.transform.position = SkyBaseCentre;
-            int layer = LevelLayerIndex();
-            var floor = Part(new Vector3(0, 0, 0), new Vector3(30, 1, 30), new Color(.08f, .12f, .2f), layer);
-            Part(new Vector3(0, .52f, 0), new Vector3(10, .05f, 10), Accent, layer, glow: true);
-            for (int side = 0; side < 4; side++)
-            {
-                Quaternion r = Quaternion.Euler(0, side * 90f, 0);
-                Part(r * new Vector3(0, 1.2f, 15), r * new Vector3(30, 1.5f, .4f), new Color(.15f, .25f, .45f), layer);
-                Part(r * new Vector3(15, 4f, 15), new Vector3(1, 8, 1), new Color(.1f, .45f, 1f), layer, glow: true);
-            }
-            // Tower with a lookout deck.
-            Part(new Vector3(-10, 4, -10), new Vector3(4, 8, 4), new Color(.12f, .18f, .3f), layer);
-            Part(new Vector3(-10, 8.5f, -10), new Vector3(8, .5f, 8), new Color(.1f, .45f, 1f), layer);
-            // Stairs up to the deck.
-            for (int i = 0; i < 8; i++) Part(new Vector3(-5.5f + i * -.01f, .5f + i, -4 - i * 0.9f), new Vector3(3, .4f, 1.2f), new Color(.2f, .3f, .5f), layer);
-            var light = new GameObject("Light").AddComponent<Light>();
-            light.transform.SetParent(skyBase.transform, false);
-            light.transform.localPosition = Vector3.up * 8f;
-            light.type = LightType.Point; light.range = 40f; light.intensity = 2f; light.color = Accent;
-            Note("SKY BASE BUILT " + SkyHeight.ToString("0") + "m UP");
-        }
-        private int LevelLayerIndex()
-        {
-            try
-            {
-                int mask = global::GameInfo.LevelLayer.value;
-                for (int i = 0; i < 32; i++) if ((mask & (1 << i)) != 0) return i;
-            }
-            catch { }
-            return 0;
-        }
-        private GameObject Part(Vector3 localPos, Vector3 size, Color colour, int layer, bool glow = false)
-        {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.transform.SetParent(skyBase.transform, false);
-            go.transform.localPosition = localPos;
-            go.transform.localScale = new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), Mathf.Abs(size.z));
-            go.layer = layer;
-            try { go.tag = "Level"; } catch { }
-            var r = go.GetComponent<Renderer>();
-            var shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Universal Render Pipeline/Simple Lit") ?? Shader.Find("Standard");
-            if (shader != null)
-            {
-                var mat = new Material(shader);
-                if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", colour);
-                mat.color = colour;
-                if (glow) { mat.EnableKeyword("_EMISSION"); if (mat.HasProperty("_EmissionColor")) mat.SetColor("_EmissionColor", colour * 2f); }
-                r.material = mat;
-            }
-            return go;
-        }
-        private void GoSkyBase()
-        {
-            if (!Bridge.Ready) return;
-            BuildSkyBase();
-            skyBase.transform.position = SkyBaseCentre;
-            Go(SkyBaseCentre + Vector3.up * 2f, "Sky base");
-        }
-        private void RemoveSkyBase()
-        {
-            if (skyBase != null) Destroy(skyBase);
-            skyBase = null;
-            Note("Sky base removed");
-        }
-        private Menu skyMenu;
-        private Menu SkyBaseMenu()
-        {
-            if (skyMenu != null) return skyMenu;
-            var m = skyMenu = new Menu("SKY BASE");
-            m.Add(new Option { Kind = OptionKind.Action, NameFn = () => "TELEPORT TO SKY BASE  [" + keySkyBase.Value.ToString().ToUpper() + "]", OnSelect = GoSkyBase, Available = InWorld, Requirement = NeedPlayer });
-            m.Action("BUILD / REBUILD SKY BASE", () => { RemoveSkyBase(); BuildSkyBase(); }, InWorld, NeedPlayer);
-            m.Action("TELEPORT BACK TO ISLAND", () => Go(Bridge.Grounded(IslandOrigin), "Island"), InWorld, NeedPlayer);
-            m.Action("REMOVE SKY BASE", RemoveSkyBase);
-            m.Label("Local build: friends need KRAKEN to stand on it.");
             return m;
         }
     }

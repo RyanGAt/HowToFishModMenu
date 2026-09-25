@@ -51,6 +51,7 @@ namespace HowToFishCustomMenu
                 Rect(new Rect(0, 0, Screen.width, Screen.height), new Color(Mathf.Abs(Mathf.Sin(Time.time * 3f)), Mathf.Abs(Mathf.Sin(Time.time * 2.1f)), Mathf.Abs(Mathf.Sin(Time.time * 1.3f)), .18f));
             if (Bridge.Ready && espTargets.Count > 0 && (espFish || espItems || espPlayers || espValuable)) DrawEsp();
             DrawFeed(accent);
+            DrawSpeedo(accent);
             if (Time.unscaledTime < chaosBannerUntil)
             {
                 Text(new Rect(0, Screen.height * .18f, Screen.width, 90), chaosEvent, centre, accent);

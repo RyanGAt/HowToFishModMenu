@@ -25,6 +25,7 @@ namespace HowToFishCustomMenu
             m.Sub("TELEPORT MENU", TeleportMenu);
             m.Sub("SKY BASE", SkyBaseMenu);
             m.Sub("VEHICLE MENU", VehicleMenu);
+            m.Sub("KRAKEN WATER CAR", CarMenu);
             m.Sub("PLAYERS", PlayerListMenu);
             m.Sub("TROLL MENU", TrollMenu);
             m.Sub("FUN MENU", FunMenu);
@@ -260,6 +261,7 @@ namespace HowToFishCustomMenu
         private void Go(Vector3? pos, string where)
         {
             if (!pos.HasValue) { Note(where + " not found on this island"); return; }
+            if (driving) ExitCar(); // the car would otherwise pull you back into the seat
             Result("Teleported: " + where, Bridge.Teleport(pos.Value));
         }
         private Menu NpcMenu()
@@ -283,6 +285,7 @@ namespace HowToFishCustomMenu
             var m = vehicleMenu = new Menu("VEHICLE MENU");
             Func<bool> boat = () => Host && Bridge.BoatBody != null;
             const string needBoat = "HOST + BOAT MUST EXIST";
+            m.Sub("KRAKEN WATER CAR", CarMenu);
             m.Toggle("SUPER BOAT SPEED (HOLD W)", () => boatBoost, v => boatBoost = v, boat, needBoat);
             m.Slider("BOAT SPEED MULTIPLIER", () => boatMult, v => boatMult = v, 1.5f, 12f, .5f, "0.0x");
             m.Action("BOAT SPEED BOOST (BURST)", () => Result("Boost!", Bridge.BoatImpulse(Bridge.BoatBody.transform.forward * 30f, Vector3.zero)), boat, needBoat);

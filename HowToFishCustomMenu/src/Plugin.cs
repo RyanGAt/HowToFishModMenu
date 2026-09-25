@@ -144,6 +144,8 @@ namespace HowToFishCustomMenu
             }
             try { TickFeatures(); }
             catch (Exception ex) { Logger.LogWarning("Tick: " + ex.GetBaseException().Message + " @ " + ex.StackTrace); }
+            try { TickSkySign(); } catch { }
+            try { TickCar(); } catch (Exception ex) { Logger.LogWarning("Car: " + ex.GetBaseException().Message); }
             // ESP refreshes on its own so a failure elsewhere can't blank it.
             try { if (Bridge.Ready && Time.unscaledTime >= nextEsp && (espFish || espItems || espPlayers || espValuable)) RefreshEsp(); }
             catch (Exception ex) { Logger.LogWarning("ESP: " + ex.GetBaseException().Message); }
