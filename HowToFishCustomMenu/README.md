@@ -1,10 +1,10 @@
-# FISH TOOL v0.2.2 — Modded Lobby Edition
+# FISH TOOL v0.2.3 — Modded Lobby Edition
 
 Old COD-menu-inspired **in-game Unity IMGUI source project** for *How to Fish* (Windows x64 / Unity Mono). This is a fresh custom project, not a renamed third-party DLL. The name/visuals are a homage to 360-era mod menus.
 
 ## Status — please read
 
-**This is a source prototype, not a fully working game cheat DLL.** This environment does not have your copy of the game, its managed assemblies, Unity runtime or .NET SDK, so it has **not been compiled or tested in game**. No finished DLL is included. Don't mistake the menu entries for working cheats.
+**This is a source prototype, not a fully working game cheat DLL.** The earlier v0.2.2 menu was successfully built and loaded in-game by the project owner, but this v0.2.3 keyboard-navigation change has not yet been built or verified on their PC. No finished DLL is included. Don't mistake the menu entries for working cheats.
 
 - **In-game menu implementation:** 11 categories, click or keyboard navigation, drag window, black / neon-green theme, FISH TOOL header and persistent config.
 - **Implemented local presentation effects:** camera FOV/zoom, camera spin (can be overridden by FPS camera scripts), rainbow menu, disco overlay, local Time.timeScale slow motion, small HUD, random-effects chaos mode. Local slow motion can interfere with simulation and isn't a supported server-wide mode.
@@ -14,7 +14,7 @@ Old COD-menu-inspired **in-game Unity IMGUI source project** for *How to Fish* (
 ## Controls
 
 - **Insert**: open / close.
-- **Up / Down + Enter**: navigate / activate.
+- **Up / Down + Enter**: navigate / activate the green-highlighted row (v0.2.3 fixes keyboard focus activating Player instead of the selection).
 - **Left / Right**: cycle pages.
 - **Backspace / Escape**: main page / close.
 - **Mouse**: click entries, drag by the header.
@@ -63,3 +63,7 @@ v0.2.2 adds `UnityEngine.TextRenderingModule.dll` to `HowToFishCustomMenu.csproj
 ```
 
 This source has not been compiled against your local game DLLs in this environment; if the game version differs, other references may still need adjusting.
+
+## v0.2.3 navigation fix
+
+Unity IMGUI buttons can retain keyboard focus after the selection bar moves. The old implementation therefore sometimes opened Player when Enter was pressed on Fishing or another tab. The new menu renders passive rows and handles mouse selection and Enter explicitly against the highlighted row. Rebuild and copy the new DLL into `BepInEx\plugins`, replacing the previous one; no BepInEx reinstall is needed. This fixes navigation only; game-specific cheat hooks are still unbound.
