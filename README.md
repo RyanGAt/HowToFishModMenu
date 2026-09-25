@@ -20,7 +20,7 @@ It has a dark menu column with a blue header, a bright selection bar, ON/OFF tag
 4. Start the game once and close it. This creates the `BepInEx\plugins` folder.
 
 ### 2. Install KRAKEN
-1. Download **`KRAKEN-v1.2.0.zip`** from the [**Releases**](../../releases) page, or grab [`HowToFishCustomMenu.dll`](HowToFishCustomMenu/bin/Release/netstandard2.1/HowToFishCustomMenu.dll) straight from the repo.
+1. Download **`HowToFishCustomMenu.dll`** from the [**Releases**](../../releases) page.
 2. Put `HowToFishCustomMenu.dll` in:
    ```
    How to Fish\BepInEx\plugins\
