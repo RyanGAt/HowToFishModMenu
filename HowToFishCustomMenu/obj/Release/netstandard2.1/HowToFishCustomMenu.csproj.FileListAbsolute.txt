@@ -1,0 +1,10 @@
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\bin\Release\netstandard2.1\HowToFishCustomMenu.deps.json
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\bin\Release\netstandard2.1\HowToFishCustomMenu.dll
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\bin\Release\netstandard2.1\HowToFishCustomMenu.pdb
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.csproj.AssemblyReference.cache
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.AssemblyInfoInputs.cache
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.AssemblyInfo.cs
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.csproj.CoreCompileInputs.cache
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.dll
+C:\Users\Ryan\Downloads\HowToFishCustomMenu\obj\Release\netstandard2.1\HowToFishCustomMenu.pdb
