@@ -114,6 +114,13 @@ Builds a floating island base **60m above the island**: a wooden deck with raili
 ### 🚗 KRAKEN Water Car
 Spawn an open-top convertible and drive it **across the water and onto land**. Controls: **W/S** gas and brake, **A/D** steer, **Shift** boost (about 230 km/h), **Jump** to hop. On a controller: **RT/LT** gas and brake, **left stick** to steer. A speedometer appears while you drive. **F10** gets you in and out and spawns the car if needed. Other players see you glide over the water; only KRAKEN users see the car itself.
 
+### 🏁 Race Track
+A floating oval circuit on the sea next to the island. It has red and white kerbs, glowing barrier posts, a chequered start/finish gantry, 3 checkpoint arches and a **jump ramp over a gap** on the far straight. **Start Race** teleports you into the car on the grid, and a lap timer shows your current time, checkpoints and best lap. Local build: other players see you racing on the water.
+
+### 🏝️ Island Teleport & Unlock All
+- **Island Teleport** has one button per island. The game moves the whole lobby, like its own island travel [HOST].
+- **Unlock All** [HOST] unlocks every island, the boat and boat radar, the grill, all extra pockets, and 50 of every bait for every player.
+
 ### 💾 Saved Locations
 Quick **Save / Load Location** (F5 / F6) plus a list of named saved locations. They're saved to `BepInEx/config/kraken_locations.txt`, so they're still there after you restart the game.
 

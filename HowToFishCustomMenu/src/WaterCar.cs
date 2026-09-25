@@ -220,6 +220,7 @@ namespace HowToFishCustomMenu
             m.Add(new Option { Kind = OptionKind.Action, NameFn = () => (driving ? "EXIT CAR" : "GET IN / DRIVE") + "  [" + keyCar.Value.ToString().ToUpper() + "]", OnSelect = ToggleCar, Available = InWorld, Requirement = NeedPlayer });
             m.Action("BRING CAR TO ME", () => { if (car == null) SpawnCar(); else { var p = Bridge.InFront(4f); p.y = SurfaceHeight(p); car.transform.position = p; } }, InWorld, NeedPlayer);
             m.Action("REPAINT (MENU COLOUR)", () => { if (car != null) { var keep = driving; var pos = car.transform.position; SpawnCar(); car.transform.position = pos; if (keep) EnterCar(); } });
+            m.Sub("RACE TRACK", TrackMenu);
             m.Action("REMOVE CAR", RemoveCar);
             m.Label("W/S gas+brake, A/D steer, Shift boost, Jump hops.");
             m.Label("Pad: RT gas, LT brake, stick steer.");

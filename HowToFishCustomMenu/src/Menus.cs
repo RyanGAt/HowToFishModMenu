@@ -26,6 +26,8 @@ namespace HowToFishCustomMenu
             m.Sub("SKY BASE", SkyBaseMenu);
             m.Sub("VEHICLE MENU", VehicleMenu);
             m.Sub("KRAKEN WATER CAR", CarMenu);
+            m.Sub("ISLAND TELEPORT", IslandMenu);
+            m.Action("UNLOCK ALL [HOST]", () => Note(UnlockAll()), IsHostNow, NeedHost);
             m.Sub("PLAYERS", PlayerListMenu);
             m.Sub("TROLL MENU", TrollMenu);
             m.Sub("FUN MENU", FunMenu);
@@ -233,6 +235,8 @@ namespace HowToFishCustomMenu
             m.Add(new Option { Kind = OptionKind.Action, NameFn = () => "LOAD LOCATION  [" + keyLoad.Value.ToString().ToUpper() + "]", OnSelect = LoadQuick, Available = InWorld, Requirement = NeedPlayer });
             m.Sub("SAVED LOCATIONS", LocationsMenu);
             m.Sub("SKY BASE", SkyBaseMenu);
+            m.Sub("ISLAND TELEPORT", IslandMenu);
+            m.Sub("RACE TRACK", TrackMenu);
             m.Action("TELEPORT TO SPAWN / ISLAND", () => Go(Bridge.IslandCentre.HasValue ? Bridge.Grounded(Bridge.IslandCentre.Value) : (Vector3?)null, "Island"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO WATER", () => Go(Bridge.OpenWater(90f), "Open water"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO FISHING SPOT", () => Go(Bridge.OpenWater(45f), "Fishing spot"), InWorld, NeedPlayer);
@@ -254,8 +258,6 @@ namespace HowToFishCustomMenu
                 else Note("Invalid coordinates");
             }, InWorld, NeedPlayer);
             m.Action("SHOW MY COORDINATES", () => { var p = Bridge.Player.position; coordX = p.x.ToString("0"); coordY = p.y.ToString("0"); coordZ = p.z.ToString("0"); Note("You are at " + coordX + ", " + coordY + ", " + coordZ); }, InWorld, NeedPlayer);
-            m.Input("ISLAND INDEX", () => islandIndex, v => islandIndex = v);
-            m.Action("LOAD ISLAND (MOVES WHOLE LOBBY)", () => Result("Island change requested", int.TryParse(islandIndex, out int i) && Bridge.TeleportToIsland(i), "solo host only / bad index"), IsHostNow, NeedHost);
             return m;
         }
         private void Go(Vector3? pos, string where)

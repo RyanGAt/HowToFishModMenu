@@ -33,7 +33,7 @@ namespace HowToFishCustomMenu
         private bool boatBoost, boatFlying, boatSpin, rainbowBoat, driveOnLand;
         private float boatMult = 2.5f, boatScale = 1f;
         // Teleport
-        private string coordX = "0", coordY = "20", coordZ = "0", islandIndex = "0";
+        private string coordX = "0", coordY = "20", coordZ = "0";
         // Players / lobby
         private object target; // selected player
         private readonly Dictionary<object, float> frozen = new Dictionary<object, float>();
