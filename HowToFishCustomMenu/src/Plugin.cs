@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HowToFishCustomMenu
 {
-    [BepInPlugin("sunshineplunge.howtofish.custommenu", "FISH TOOL - Modded Lobby Edition", "0.2.2")]
+    [BepInPlugin("sunshineplunge.howtofish.custommenu", "FISH TOOL - Modded Lobby Edition", "0.2.3")]
     public sealed class Plugin : BaseUnityPlugin
     {
         // Replace with a version-verified integration for How to Fish.
@@ -40,7 +40,7 @@ namespace HowToFishCustomMenu
             flySpeed = Config.Bind("Movement", "FlySpeed", 12f, "Fly speed");
             boatMultiplier = Config.Bind("Boat", "SpeedMultiplier", 2.5f, "Boat boost multiplier");
             espEnabled = Config.Bind("ESP", "Enabled", false, "Entity label overlay");
-            Logger.LogInfo("FISH TOOL v0.2.2 menu ready. Press " + menuKey.Value);
+            Logger.LogInfo("FISH TOOL v0.2.3 menu ready. Press " + menuKey.Value);
         }
         private void Update()
         {
@@ -222,7 +222,7 @@ namespace HowToFishCustomMenu
             GUI.DrawTexture(new Rect(0, 0, W, H), black);
             GUI.DrawTexture(new Rect(0, 0, W, 4), green);
             GUI.Label(new Rect(0, 12, W, 48), "FISH TOOL", title);
-            GUI.Label(new Rect(0, 55, W, 20), "HOW TO FISH // MODDED LOBBY EDITION v0.2.2", subtitle);
+            GUI.Label(new Rect(0, 55, W, 20), "HOW TO FISH // MODDED LOBBY EDITION v0.2.3", subtitle);
             GUI.Box(new Rect(22, 88, W - 44, 399), GUIContent.none);
             GUI.BeginGroup(new Rect(36, 97, W - 70, 387));
             y = 0f; row = 0;
