@@ -1,212 +1,197 @@
-# 🦑 KRAKEN v1.1.0 — Modded Lobby Edition
+# 🦑 KRAKEN v1.2.0 — Modded Lobby Edition
 
-An old-school Xbox 360 **Call of Duty style mod menu** for ***How to Fish***.
+An old-school Xbox 360 **Call of Duty-style mod menu** for ***How to Fish***.
 
-It has a dark menu column with a blue header, a highlighted selection bar, ON/OFF tags, a scroll bar and a message feed in the bottom-left. You scroll with the arrow keys, select with **Space** and go back with **Backspace**, and you can keep walking around while it's open.
+It has a dark menu column with a blue header, a bright selection bar, ON/OFF tags, a scroll bar and a message feed in the bottom-left. It has menu sounds, a **KRAKEN LOADED** banner when you spawn, and chat announcements that everyone in the lobby can see. You scroll with the arrows, select with **Space**, go back with **Backspace**, and can keep walking around while it's open, just like the old modded lobbies.
 
-> Built for private lobbies with friends. It's a BepInEx 5 plugin for the Windows Mono build of the game.
+> A BepInEx 5 plugin for the Windows (Mono) version of How to Fish. Made for **private lobbies with friends who are up for a modded game**.
 
 ---
 
 ## 📥 Installation
 
 ### 1. Install BepInEx 5
-1. Download **BepInEx 5 (x64, Mono)** from the [BepInEx releases page](https://github.com/BepInEx/BepInEx/releases). Get the latest `BepInEx_win_x64_5.x.x.zip`.
+1. Download **BepInEx 5 for Windows x64** from the [BepInEx releases page](https://github.com/BepInEx/BepInEx/releases). You want `BepInEx_win_x64_5.x.x.zip`.
 2. Open your game folder. In Steam, right-click **How to Fish** → **Manage** → **Browse local files**. It looks like:
    ```
    ...\steamapps\common\How to Fish\How to Fish\
    ```
 3. Extract the zip into that folder so `winhttp.dll` and the `BepInEx` folder sit next to `How to Fish.exe`.
-4. Start the game once and close it. This creates `BepInEx\plugins`.
+4. Start the game once and close it. This creates the `BepInEx\plugins` folder.
 
 ### 2. Install KRAKEN
-1. Download [`HowToFishCustomMenu.dll`](HowToFishCustomMenu/bin/Release/netstandard2.1/HowToFishCustomMenu.dll) from this repo.
-2. Copy it into:
+1. Download **`KRAKEN-v1.2.0.zip`** from the [**Releases**](../../releases) page, or grab [`HowToFishCustomMenu.dll`](HowToFishCustomMenu/bin/Release/netstandard2.1/HowToFishCustomMenu.dll) straight from the repo.
+2. Put `HowToFishCustomMenu.dll` in:
    ```
    How to Fish\BepInEx\plugins\
    ```
-3. Start the game. The top-left corner shows **KRAKEN v1.1.0 [INSERT]**.
-4. Press **Insert** to open the menu.
+3. Start the game and load a world. You'll see the **KRAKEN LOADED** banner.
+4. Press **Insert** (or **LB + D-pad Up** on a controller) to open the menu.
 
 To check it loaded, open `BepInEx\LogOutput.log`. It should contain:
 ```
-Loading [KRAKEN - Modded Lobby Edition 1.1.0]
+Loading [KRAKEN - Modded Lobby Edition 1.2.0]
 Harmony: 12/12 hooks active
 ```
 
 ### Uninstall
-Delete `BepInEx\plugins\HowToFishCustomMenu.dll`.
+Delete `BepInEx\plugins\HowToFishCustomMenu.dll`. To remove BepInEx completely, also delete the `BepInEx` folder, `winhttp.dll` and `doorstop_config.ini`.
 
 ---
 
 ## 🎮 Controls
 
-| Key | Action |
-| --- | --- |
-| **Insert** | Open / close the menu |
-| **↑ / ↓** | Scroll (hold to repeat) |
-| **Space** | Select / toggle |
-| **← / →** | Change sliders and choices |
-| **Backspace** | Go back a page |
-| **Escape** | Close the menu |
+| Keyboard | Controller | Action |
+| --- | --- | --- |
+| **Insert** | **LB + D-pad Up** | Open / close the menu |
+| **↑ / ↓** | **D-pad Up / Down** | Scroll (hold to repeat) |
+| **Space** | **A** | Select / toggle |
+| **← / →** | **D-pad Left / Right** | Change sliders and choices |
+| **Backspace** | **B** | Go back (B on the main page closes the menu) |
+| **Escape** | | Close the menu |
 
-**🎮 Controller:** hold **LB + D-pad Up** to open/close · **D-pad** scroll/adjust · **A** select · **B** back (B on the main page closes).
+- You can still **walk around** with the menu open. Jump, mouse look, shooting and item buttons are switched off while it's open so nothing fires by accident.
+- **Text rows** (money, item search, coordinates): press **Space** to start typing and **Enter** when you're done.
 
-**⌨️ Hotkeys (rebind in Settings → Keybinds):**
+### ⌨️ Hotkeys
+Rebind any of these in **Settings → Keybinds**: press Space on a row, then press the new key. Backspace unbinds it and Esc cancels.
 
-| Default key | Action |
+| Default | Action |
 | --- | --- |
 | **F5** | Save location |
 | **F6** | Load location |
-| **F7** | Teleport to Sky Base |
+| **F7** | Teleport to the Sky Base |
 | **F8** | Toggle fly |
 | **F9** | Toggle no clip |
-| **F10** | Get in / out of the water car |
+| **F10** | Get in / out of the KRAKEN water car |
 | **F11** | Load preset 1 |
-| *(unbound)* | Toggle god mode |
+| *(unbound)* | God mode, presets 2 and 3 |
 
-To rebind: open **Settings → Keybinds**, press Space on a row, then press the new key. Backspace unbinds it and Esc cancels.
-
-- While the menu is open you can still **walk around**. Jump, mouse look, shooting and hotbar scrolling are switched off so they don't trigger by accident.
-- **Text rows** (money, item search, coordinates): press **Space** to start typing and **Enter** when you're done.
-- **Fly mode:** WASD to move, Jump to go up, Left Ctrl to go down, hold Shift to go faster.
-- **Fish cannon:** middle mouse button.
-
-The menu key can be changed in `BepInEx\config\sunshineplunge.howtofish.custommenu.cfg`.
+**Fly:** WASD, Jump to go up, Left Ctrl to go down, Shift for speed. **Fish launcher:** middle mouse.
+**Water car:** W/S gas and brake, A/D steer, Shift boost, Jump to hop. On a controller: RT/LT and the left stick.
 
 ---
 
 ## 👑 Host vs client
 
-How to Fish uses a host-authoritative network, so many effects only work when **you host the lobby**.
+How to Fish is host-authoritative, so a lot of the fun only works when **you host the lobby**.
 
-- **[HOST]** rows only work when you're the host. When you're not, they're greyed out, and pressing one tells you why.
-- **LOCAL VIEW** rows only change what you see: body shape, boat colour and size, camera effects, fog and time of day.
-- Friends **don't need the mod installed**. Host actions use the game's own network functions.
+- **[HOST]** rows only work when you're the host. As a client they're greyed out, and pressing one tells you why.
+- Host actions use the game's own networking, so **friends don't need the mod installed** to see and feel them.
+- **LOCAL VIEW** rows only change what *you* see: body shape, boat colour and size, camera effects, fog and time of day.
+- The **Sky Base**, **Water Car** and **Race Track** are built in your own game. Only KRAKEN users see them; everyone else just sees you flying or gliding over the water.
 
 ---
 
-## 📋 Menus & features
+## 📋 Menus
 
-### 01 · Player Menu
-God Mode [HOST] · Demi God (auto heal) · Never Hungry · Fly Mode · No Clip · Speed Multiplier · Super Speed · Super Sprint · Jump Multiplier · Super Jump · Infinite Jump · Gravity Multiplier · Moon Gravity · Zero Gravity · Walk on Water · Freeze in Mid-Air · Spinbot · Body Shape (Giant / Tiny / Super Skinny / Wide) · Launch Me Up · Suicide / Respawn · Reset Character
+**Main menu:** Player · Fishing · Aimbot · Weapon & Tool · Item Spawner · Teleport · Vehicle · Extras · Players · Troll · Fun · Lobby · Casino · World · ESP · Chaos Mode · Settings · Reset Everything
 
-### 02 · Fishing Menu
-Instant Catch · Auto Fish · Unlimited Bait · Fish Size · Spawn Random / Giant / Tiny Fish · Spawn Every Fish · Fish Rain · **Fish Tornado** · Fish Army · Fish Magnet · Flying Fish · Exploding Fish · Fish Value Multiplier (affects the real sale price) · Fish Weight Multiplier · Resize All Fish · Fish Cannon
+### Player
+God Mode · Demi God (auto heal) · Never Hungry · Fly Mode · No Clip · Speed Multiplier · Super Speed · Super Sprint · Jump Multiplier · Super Jump · Infinite Jump · Moon / Zero / Normal Gravity · Walk on Water · Freeze in Mid-Air · Spinbot · Body Shape (Giant / Tiny / Super Skinny / Wide) · Launch Me Up · Suicide / Respawn · Reset Character
 
-### Aimbot Menu
-Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Silent Aim** (hits fish even underwater) · Triggerbot · Unfair Aimbot preset
+### Fishing
+Instant Catch · Auto Fish · Unlimited Bait · Fish Size · Spawn Random / Giant / Tiny Fish · Spawn Every Fish · Fish Rain · **Fish Tornado** · Fish Army · Fish Magnet · Flying Fish · Exploding Fish · Fish Value Multiplier (changes the real sale price) · Fish Weight Multiplier · Resize All Fish
+
+### Aimbot
+Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Silent Aim** (lands hits on fish even underwater) · Triggerbot · Unfair Aimbot preset
 *Targets fish and sea creatures only.*
 
-### 03 · Weapon & Tool Menu
-**Full Upgrade Held Gun** (max bullets, best barrel, extended mag, laser) · Cycle Sight · **No Recoil** · **Damage Multiplier (up to 50x)** · One Shot Kill Lobby · Unlimited Ammo · Instant Reload · Rapid Fire · No Cooldown · Zero Spread · Fast Projectiles · No Self Knockback · Explosive Bullets · **God Gun (everything on)** · Fish Launcher · Object Cannon · Super Knockback Blast · Spawn Explosion · Give All Weapons
+### Weapon & Tool
+**Full Upgrade Held Gun** (max bullets, best barrel, extended mag, laser) · Cycle Sight · **No Recoil** · **Damage Multiplier (up to 50x)** · One Shot Kill Lobby · Unlimited Ammo · Instant Reload · Rapid Fire · No Cooldown · Zero Spread · Fast Projectiles · No Self Knockback · **Explosive Bullets** · **God Gun** (everything on) · Fish Launcher · Object Cannon · Super Knockback Blast · Spawn Explosion · Give All Weapons
 
-### 04 · Item Spawner
-**Searchable item list** · Quantity 1 / 10 / 100 · Spawn by Name / ID · Spawn Random Item · Spawn All Items · Give All Fishing Rods · Give All Equipment · Duplicate Held Item · Delete Held Item · Delete Nearby Items · Item Size · Item Value Multiplier · Floating Items · Item Rain
+### Item Spawner
+**Searchable item list** · Quantity 1 / 10 / 100 · Spawn by Name / ID · Spawn Random Item · Spawn All Items · Give All Fishing Rods · Give All Equipment · Duplicate / Delete Held Item · Delete Nearby Items · Item Size · Item Value Multiplier · Item Rain
 
-### 05 · Teleport Menu
-Save / Load Location · Saved Locations · Sky Base · Spawn / Island · Water · Fishing Spot · Shop · Casino · Boat · **Any NPC** · Selected Player · Random Location · 100m Up · Under Map · Blink Forward · Teleport to Coordinates · Show My Coordinates · Load Island
-*Destinations come from the island you're currently on.*
+### Teleport
+Save / Load Location · **Saved Locations** (kept after restart) · **Sky Base** · **Island Teleport** (one button per island) · Spawn · Water · Fishing Spot · Shop · Casino · Boat · **Any NPC** · Selected Player · Random · 100m Up · Under Map · Blink Forward · Coordinates
 
-### ☁️ Sky Base
-Builds a floating island base **60m above the island**: a wooden deck with railings and glowing lights, a lounge corner, lamps, a lookout tower with spiral stairs, a diving board, a rocky underside with a glowing crystal, and a KRAKEN sign that always turns to face you. Teleport there with **F7** or from the menu, teleport back to the island, rebuild or remove it.
-*It's built on your own game, so only you can see it and stand on it. Friends without KRAKEN will fall.*
+#### ☁️ Sky Base
+A floating island base 60m above the island. It has a wooden deck, railings with glowing lights, a lounge corner, lamps, a lookout tower with spiral stairs, a diving board, a rocky underside with a glowing crystal, and a KRAKEN sign that always faces you. Press **F7** to go there.
 
-### 🚗 KRAKEN Water Car
-Spawn an open-top convertible and drive it **across the water and onto land**. Controls: **W/S** gas and brake, **A/D** steer, **Shift** boost (about 230 km/h), **Jump** to hop. On a controller: **RT/LT** gas and brake, **left stick** to steer. A speedometer appears while you drive. **F10** gets you in and out and spawns the car if needed. Other players see you glide over the water; only KRAKEN users see the car itself.
+### Vehicle
+**KRAKEN Water Car** (an open-top convertible that drives on water and land, with a speedometer) · **Race Track** · Super Boat Speed · Boat Speed Multiplier · Speed Boost · Flying Boat · Drive on Land · Boat Jump · Launch · Flip · Spin · Teleport Boat to Me · Rainbow Boat · Boat Size · Invisible Boat
 
-### 🏁 Race Track
-A floating oval circuit on the sea next to the island. It has red and white kerbs, glowing barrier posts, a chequered start/finish gantry, 3 checkpoint arches and a **jump ramp over a gap** on the far straight. **Start Race** teleports you into the car on the grid, and a lap timer shows your current time, checkpoints and best lap. Local build: other players see you racing on the water.
+#### 🏁 Race Track
+A floating oval on the sea with red and white kerbs, glowing barriers, a chequered start/finish gantry, 3 checkpoint arches and a **jump ramp over a gap**. **Start Race** puts you in the car on the grid, and a lap timer tracks your time, checkpoints and best lap.
 
-### 🏝️ Island Teleport & Unlock All
-- **Island Teleport** has one button per island. The game moves the whole lobby, like its own island travel [HOST].
-- **Unlock All** [HOST] unlocks every island, the boat and boat radar, the grill, all extra pockets, and 50 of every bait for every player.
-
-### ⭐ Extras
-- **Chat kill-feed:** as host, KRAKEN posts classic modded-lobby messages in the game's chat. Everyone sees them as **[Server]** messages, no mod needed: "KRAKEN // HOST ENABLED GOD MODE", "KRAKEN // Ryan GOT FISH PRISON!", boss alerts, and a welcome message when you load in. You can turn it off in Extras.
+### Extras
+- **Unlock All** [HOST]: every island, the boat and radar, the grill, all extra pockets, and 50 of every bait for everyone.
 - **Boss Spawner:** Bowhead Whale, Mutated Whale, Giant Piranha, The Old Pike, Goblin Shark and Spider Crab. Spawn one next to you or on a target, or start **Boss Rush**, where the next boss appears when the last one dies.
-- **Seagull Army / Albatross Squad:** a flock of item-stealing birds over a target or yourself.
-- **Auto-sell:** sell your held item or everything within 10m, or auto-sell dead fish near you. It uses the game's own sell code.
-- **Kill aura:** hits every creature within range (2–20m).
-- **Camera:** first person, **third person** (with a stand-in character, because the game removes your own body model), **free cam** (WASD, Space/Ctrl, Shift for speed), and **spectate target**.
-- **Presets:** save every toggle and slider to 3 preset slots. **F11** loads preset 1, and presets 2–3 can be bound in Keybinds.
-- **Menu sounds and startup banner:** COD-style hover and click sounds, and a big **KRAKEN LOADED** banner when you spawn.
+- **Seagull Army / Albatross Squad:** a flock of item-stealing birds over a target.
+- **Auto-sell:** sell your held item or everything within 10m, or auto-sell dead fish near you.
+- **Kill aura:** hits every creature in range (2–20m).
+- **Camera:** first person · **third person** (with a stand-in character) · **free cam** · **spectate target**.
+- **Presets:** save every toggle and slider into 3 slots and load one with a key.
+- **Chat kill-feed:** as host, KRAKEN posts classic modded-lobby messages in the game chat, and everyone sees them as **[Server]** messages: *"KRAKEN // HOST ENABLED GOD MODE"*, *"KRAKEN // Dave GOT FISH PRISON!"*, boss alerts and a welcome message.
+- **Menu sounds** on/off.
 
-### 💾 Saved Locations
-Quick **Save / Load Location** (F5 / F6) plus a list of named saved locations. They're saved to `BepInEx/config/kraken_locations.txt`, so they're still there after you restart the game.
+### Players
+Pick a player to open their menu: Info · Teleport to / Bring to Me · Heal · Heal Aura · Kill · Launch · **Launch into Space** · Launch into Water · Sky Teleport · Random Teleport · Freeze · Spin · Bounce · Fish Rain on Player · **Fish Prison** · Spawn Fish Around · Giant Fish Behind · Fish Pile · Spawn Objects Around · Explosion · Fish Explosion · Give Money · Give Item · Clear Effects
 
-### 06 · Vehicle Menu
-Super Boat Speed · Boat Speed Multiplier · Speed Boost · Flying Boat · Drive on Land · Boat Jump · Launch Boat · Flip Boat · Boat Spin · Teleport Boat to Me · Teleport to Boat · Rainbow Boat · Boat Size · Invisible Boat
-
-### 07 · Players (player list)
-Pick a player to open their menu: Player Info · Teleport to / Bring to Me · Heal · Heal Aura · Kill · Launch · **Launch into Space** · Launch into Water · Sky Teleport · Random Teleport · Freeze · Spin · Bounce · Fish Rain on Player · **Fish Prison** · Spawn Fish Around · Giant Fish Behind · Fish Pile · Spawn Objects Around · Explosion on Player · Fish Explosion · Give Money · Give Item · Clear Effects
-
-### 08 · Troll Menu
+### Troll
 The same player actions, aimed at a **TARGET** you cycle through with Space.
 
-### 09 · Fun Menu
-Disco Mode · Rainbow World · Rainbow Mod Menu · Everything Floats / Spins / Bounces · Giant / Tiny Everything · **Fish Apocalypse** · Time Scale · Super Slow Motion · Fast Forward · Drunk Camera · Upside Down Camera · Spinning Camera · Fisheye · Extreme Zoom · FOV slider
+### Fun
+Disco Mode · Rainbow World · Everything Floats / Spins / Bounces · Giant / Tiny Everything · **Fish Apocalypse** · Time Scale · Super Slow Motion · Fast Forward · Drunk Camera · Upside Down Camera · Spinning Camera · Fisheye · Extreme Zoom · FOV slider · Reset Camera
 
-### 10 · Lobby Menu
-God Mode Lobby · Teleport All to Me · Heal Lobby · Launch Lobby · Moon Gravity · Fish Rain Lobby · Giant Fish Lobby · Unlimited Money · Unlimited Items · Bounce Lobby · Random Teleport Lobby · Fish Apocalypse Lobby · Chaos Lobby · Reset Lobby Effects
+### Lobby
+God Mode Lobby · Teleport All to Me · Heal Lobby · Launch Lobby · Fish Rain Lobby · Giant Fish Lobby · Unlimited Items Lobby · Bounce Lobby · Continuous Fish Rain · Random Teleport Lobby · Fish Apocalypse Lobby · Chaos Lobby · Reset Lobby Effects
 
-### 11 · Casino Menu
-Set / Add Money · Unlimited Money · **Force Roulette (Black / Red / Green)** · **Guaranteed Win** · Multiply Winnings · Jackpot Mode · Casino Chaos · Teleport to Casino
-*Roulette rigging works when you host.*
+### Casino
+Set / Add Money · Unlimited Money · **Force Roulette (Black / Red / Green)** · **Guaranteed Win** · Multiply Winnings · Jackpot Mode · Casino Chaos
 
-### 12 · World Menu
-World Gravity · Freeze Time · Speed Up Physics · No Fog · Super Fog · Time of Day (Day / Sunrise / Sunset / Night) · Spawn / Delete Objects · Object Size · Launch Nearby Objects · Reset World
+### World
+World Gravity · Freeze Time · No Fog · Super Fog · Time of Day (Day / Sunrise / Sunset / Night) · Reset World
 
-### 13 · ESP Menu
-Player ESP / Name Tags · Fish ESP · Item ESP · Valuable ESP ($100+) · **ESP Boxes** (on/off) · **ESP Lines / Tracers** (on/off) · Line Start (Bottom / Centre / Top) · Distance · Rainbow ESP · ESP Range
-
+### ESP
+Player ESP / Name Tags · Fish ESP · Item ESP · Valuable ESP ($100+) · **Boxes** · **Lines / Tracers** (start from the bottom, centre or top of the screen) · Distance · Rainbow ESP · Range
 Colours: 🔵 fish · 🟢 items · 🟡 valuables · 🔴 players
 
-### 14 · Chaos Mode
-START / STOP CHAOS · Interval · Random Player / World / Fish Effects · Extreme Chaos · Reset Everything
-Every few seconds a random event fires, with a big **CHAOS EVENT #001** banner: fish rain, moon gravity, giant mode, boat launch, fish apocalypse, disco, drunk camera and more.
+### Chaos Mode
+Start / Stop · Interval · Random Player / World / Fish Effects · Extreme Chaos · Reset Everything. Every few seconds something ridiculous happens, with a big **CHAOS EVENT #001** banner.
 **WARNING: ABSOLUTE FISH MAYHEM**
 
 ### Settings
-Menu Colour (COD Blue, Cyan, Green, Red, Purple, Orange, Pink) · Rainbow Menu · Menu Position (Right / Left / Centre) · Menu Scale · Fly Speed · Save Config
+Menu Colour (COD Blue, Cyan, Green, Red, Purple, Orange, Pink) · Rainbow Menu · Menu Position (Right / Left / Centre) · Menu Scale · Fly Speed · **Keybinds** · Save Config
 
 ---
 
 ## 🔧 Building from source
 
-Requirements: **.NET SDK 6+** and the game installed with BepInEx 5.
+You need the **.NET SDK 6 or newer**, and the game installed with BepInEx 5.
 
 ```powershell
 cd HowToFishCustomMenu
 dotnet build -c Release "-p:GameDir=C:\Program Files (x86)\Steam\steamapps\common\How to Fish\How to Fish"
 ```
 
-Or use the helper script:
+Or run `.\HowToFishCustomMenu\build.ps1 -GameDir "<your game folder>"`.
 
-```powershell
-.\HowToFishCustomMenu\build.ps1 -GameDir "C:\...\How to Fish\How to Fish"
-```
-
-The DLL is written to `HowToFishCustomMenu\bin\Release\netstandard2.1\HowToFishCustomMenu.dll`. The project references `Assembly-CSharp`, FishNet, Unity and Harmony from your game folder.
+The output is `HowToFishCustomMenu\bin\Release\netstandard2.1\HowToFishCustomMenu.dll`. The project references `Assembly-CSharp`, FishNet, Steamworks.NET, the Unity Input System, Unity and Harmony straight from your game folder, so nothing from the game is included in this repo.
 
 ### Source layout
-| File | Purpose |
+| File | What it does |
 | --- | --- |
-| `src/Plugin.cs` | Plugin entry, key navigation, frame loop |
-| `src/Menu.cs` | Menu / option model (toggle, slider, choice, submenu, input) |
-| `src/Menus.cs` | Every menu page and option |
-| `src/MenuRenderer.cs` | COD-style drawing, ESP, feed, chaos banner |
+| `src/Plugin.cs` | Plugin entry point, menu navigation and the frame loop |
+| `src/Menu.cs` | Menu and row types (toggle, slider, choice, submenu, text input) |
+| `src/Menus.cs` | The main menu pages and their rows |
+| `src/MenuRenderer.cs` | COD-style drawing, ESP, feed and banners |
 | `src/Features.cs` | Feature state and per-frame effects |
-| `src/Patches.cs` | Harmony hooks: god mode, bait, roulette, silent aim, explosive bullets, recoil, cooldown, damage |
-| `src/GameBridge*.cs`, `src/WeaponMods.cs` | Calls into the game's player, item, money, boat, weapon and network code |
+| `src/Patches.cs` | Harmony hooks: god mode, bait, roulette, winnings, silent aim, explosive bullets, recoil, cooldown, damage |
+| `src/Extras.cs` | Controller input, keybinds, saved locations |
+| `src/Additions.cs` | Chat kill-feed, bosses, seagulls, auto-sell, kill aura, cameras, presets, sounds, banner |
+| `src/SkyBase.cs` · `src/WaterCar.cs` · `src/Unlocks.cs` | Sky base, water car, race track, island teleport, unlock all |
+| `src/GameBridge*.cs` · `src/WeaponMods.cs` | Calls into the game's player, item, money, boat, weapon and network code |
 
-See [`REVERSE_ENGINEERING.md`](HowToFishCustomMenu/REVERSE_ENGINEERING.md) for notes on the game hooks.
+See [`REVERSE_ENGINEERING.md`](HowToFishCustomMenu/REVERSE_ENGINEERING.md) for which game functions each feature uses.
 
 ---
 
 ## ⚠️ Notes
 
-- Tested against How to Fish **1.0.12**. Game updates can break hooks. If that happens, check `BepInEx\LogOutput.log` for `Hook missing` lines.
-- Use it in **private lobbies with friends who are happy to play modded**.
+- Built and tested against How to Fish **1.0.12**. A game update can break hooks. If something stops working, check `BepInEx\LogOutput.log` for `Hook missing` lines.
+- Use it in **private lobbies with friends who are happy to play modded**. Don't use it to ruin strangers' games.
+- **Unlock All**, spawned items and money changes are saved into your world. Try them on a spare save first.
 - Spawning huge numbers of items can lag the lobby, so keep quantities sensible.
-- Not affiliated with the developers of How to Fish.
+- This is a fan-made mod. It is not affiliated with or endorsed by the developers of How to Fish.

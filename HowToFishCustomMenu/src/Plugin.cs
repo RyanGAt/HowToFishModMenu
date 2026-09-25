@@ -11,7 +11,7 @@ namespace HowToFishCustomMenu
     [BepInPlugin("sunshineplunge.howtofish.custommenu", "KRAKEN - Modded Lobby Edition", Version)]
     public sealed partial class Plugin : BaseUnityPlugin
     {
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
         internal GameBridge Bridge;
         private Harmony harmony;
         private ConfigEntry<KeyCode> menuKey;
