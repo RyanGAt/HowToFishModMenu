@@ -481,7 +481,7 @@ namespace HowToFishCustomMenu
         {
             if (sun == null)
             {
-                sun = RenderSettings.sun ?? FindObjectsByType<Light>(FindObjectsSortMode.None).FirstOrDefault(l => l.type == LightType.Directional);
+                sun = RenderSettings.sun ?? FindObjectsByType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
                 if (sun == null) { Note("No sun light found"); return; }
                 sunRot = sun.transform.rotation; sunIntensity = sun.intensity; sunColour = sun.color;
             }

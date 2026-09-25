@@ -192,7 +192,7 @@ namespace HowToFishCustomMenu
             get
             {
                 var type = FindType("SellBox");
-                var box = type == null ? null : UnityEngine.Object.FindFirstObjectByType(type) as Component;
+                var box = type == null ? null : UnityEngine.Object.FindAnyObjectByType(type) as Component;
                 return box != null ? box.transform.position : (Vector3?)null;
             }
         }
@@ -209,7 +209,7 @@ namespace HowToFishCustomMenu
             var list = new List<KeyValuePair<string, Vector3>>();
             var type = FindType("NPC");
             if (type == null) return list;
-            foreach (var o in UnityEngine.Object.FindObjectsByType(type, FindObjectsSortMode.None))
+            foreach (var o in UnityEngine.Object.FindObjectsByType(type))
                 if (o is Component c) list.Add(new KeyValuePair<string, Vector3>(c.name.Replace("(Clone)", "").Trim(), c.transform.position));
             return list;
         }
