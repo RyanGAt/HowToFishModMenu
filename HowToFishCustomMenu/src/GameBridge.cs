@@ -28,7 +28,7 @@ namespace HowToFishCustomMenu
 
         // While the menu is open the player can still walk (classic COD menu feel), but
         // jump (Space = select), mouse look, firing and hotbar scrolling are switched off.
-        private static readonly string[] MenuBlockedActions = { "PlayerJump", "PlayerLook", "PlayerLeftClick", "PlayerRightClick", "InventoryScroll" };
+        private static readonly string[] MenuBlockedActions = { "PlayerJump", "PlayerLook", "PlayerLeftClick", "PlayerRightClick", "InventoryScroll", "PlayerCrouch", "PlayerDrop", "PlayerPickUp", "InventoryNone", "ChangeBait" };
         private readonly List<object> pausedActions = new List<object>();
         public void SetGameInputBlocked(bool blocked)
         {

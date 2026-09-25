@@ -23,6 +23,7 @@ namespace HowToFishCustomMenu
             m.Sub("WEAPON & TOOL MENU", WeaponMenu);
             m.Sub("ITEM SPAWNER", ItemMenu);
             m.Sub("TELEPORT MENU", TeleportMenu);
+            m.Sub("SKY BASE", SkyBaseMenu);
             m.Sub("VEHICLE MENU", VehicleMenu);
             m.Sub("PLAYERS", PlayerListMenu);
             m.Sub("TROLL MENU", TrollMenu);
@@ -227,8 +228,10 @@ namespace HowToFishCustomMenu
         {
             if (teleportMenu != null) return teleportMenu;
             var m = teleportMenu = new Menu("TELEPORT MENU");
-            m.Action("SAVE POSITION", () => { AddWaypoint("SAVED " + (waypoints.Count + 1)); }, InWorld, NeedPlayer);
-            m.Sub("SAVED LOCATIONS / WAYPOINTS", WaypointMenu);
+            m.Add(new Option { Kind = OptionKind.Action, NameFn = () => "SAVE LOCATION  [" + keySave.Value.ToString().ToUpper() + "]", OnSelect = SaveQuick, Available = InWorld, Requirement = NeedPlayer });
+            m.Add(new Option { Kind = OptionKind.Action, NameFn = () => "LOAD LOCATION  [" + keyLoad.Value.ToString().ToUpper() + "]", OnSelect = LoadQuick, Available = InWorld, Requirement = NeedPlayer });
+            m.Sub("SAVED LOCATIONS", LocationsMenu);
+            m.Sub("SKY BASE", SkyBaseMenu);
             m.Action("TELEPORT TO SPAWN / ISLAND", () => Go(Bridge.IslandCentre.HasValue ? Bridge.Grounded(Bridge.IslandCentre.Value) : (Vector3?)null, "Island"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO WATER", () => Go(Bridge.OpenWater(90f), "Open water"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO FISHING SPOT", () => Go(Bridge.OpenWater(45f), "Fishing spot"), InWorld, NeedPlayer);
@@ -258,23 +261,6 @@ namespace HowToFishCustomMenu
         {
             if (!pos.HasValue) { Note(where + " not found on this island"); return; }
             Result("Teleported: " + where, Bridge.Teleport(pos.Value));
-        }
-        private void AddWaypoint(string name)
-        {
-            waypoints.Add(new KeyValuePair<string, Vector3>(name, Bridge.Player.position));
-            Note(name + " saved");
-        }
-        private Menu WaypointMenu()
-        {
-            var m = new Menu("WAYPOINTS");
-            m.Dynamic = () =>
-            {
-                var rows = new List<Option> { new Option { Kind = OptionKind.Action, Name = "SET CUSTOM WAYPOINT HERE", OnSelect = () => AddWaypoint("WAYPOINT " + (waypoints.Count + 1)) } };
-                foreach (var w in waypoints) { var pos = w.Value; rows.Add(new Option { Kind = OptionKind.Action, Name = "LOAD " + w.Key, OnSelect = () => Go(pos, "Waypoint") }); }
-                if (waypoints.Count > 0) rows.Add(new Option { Kind = OptionKind.Action, Name = "CLEAR ALL", OnSelect = () => waypoints.Clear() });
-                return rows;
-            };
-            return m;
         }
         private Menu NpcMenu()
         {
@@ -630,9 +616,10 @@ namespace HowToFishCustomMenu
             m.Choice("MENU POSITION", new[] { "RIGHT", "LEFT", "CENTRE" }, () => menuPos, v => menuPos = v);
             m.Slider("MENU SCALE", () => menuScale, v => menuScale = v, .7f, 1.6f, .1f, "0.0x");
             m.Slider("FLY SPEED", () => flySpeed.Value, v => flySpeed.Value = v, 4f, 60f, 2f, "0");
+            m.Sub("KEYBINDS", KeybindMenu);
             m.Action("SAVE CONFIG", () => { Config.Save(); Note("Config saved"); });
             m.Label("Hooks: " + Patches.Report);
-            m.Label("Toggle key: " + menuKey.Value + " (BepInEx config)");
+            m.Label("Controller: LB + D-PAD UP, A select, B back");
             return m;
         }
     }

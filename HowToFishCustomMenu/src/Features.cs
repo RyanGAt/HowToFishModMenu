@@ -33,7 +33,6 @@ namespace HowToFishCustomMenu
         private bool boatBoost, boatFlying, boatSpin, rainbowBoat, driveOnLand;
         private float boatMult = 2.5f, boatScale = 1f;
         // Teleport
-        private readonly List<KeyValuePair<string, Vector3>> waypoints = new List<KeyValuePair<string, Vector3>>();
         private string coordX = "0", coordY = "20", coordZ = "0", islandIndex = "0";
         // Players / lobby
         private object target; // selected player

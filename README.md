@@ -50,6 +50,21 @@ Delete `BepInEx\plugins\HowToFishCustomMenu.dll`.
 | **Backspace** | Go back a page |
 | **Escape** | Close the menu |
 
+**🎮 Controller:** hold **LB + D-pad Up** to open/close · **D-pad** scroll/adjust · **A** select · **B** back (B on the main page closes).
+
+**⌨️ Hotkeys (rebind in Settings → Keybinds):**
+
+| Default key | Action |
+| --- | --- |
+| **F5** | Save location |
+| **F6** | Load location |
+| **F7** | Teleport to Sky Base |
+| **F8** | Toggle fly |
+| **F9** | Toggle no clip |
+| *(unbound)* | Toggle god mode |
+
+To rebind: open **Settings → Keybinds**, press Space on a row, then press the new key. Backspace unbinds it and Esc cancels.
+
 - While the menu is open you can still **walk around**. Jump, mouse look, shooting and hotbar scrolling are switched off so they don't trigger by accident.
 - **Text rows** (money, item search, coordinates): press **Space** to start typing and **Enter** when you're done.
 - **Fly mode:** WASD to move, Jump to go up, Left Ctrl to go down, hold Shift to go faster.
@@ -88,8 +103,15 @@ Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Sile
 **Searchable item list** · Quantity 1 / 10 / 100 · Spawn by Name / ID · Spawn Random Item · Spawn All Items · Give All Fishing Rods · Give All Equipment · Duplicate Held Item · Delete Held Item · Delete Nearby Items · Item Size · Item Value Multiplier · Floating Items · Item Rain
 
 ### 05 · Teleport Menu
-Save Position · Waypoints · Spawn / Island · Water · Fishing Spot · Shop · Casino · Boat · **Any NPC** · Selected Player · Random Location · 100m Up · Under Map · Blink Forward · Teleport to Coordinates · Show My Coordinates · Load Island
+Save / Load Location · Saved Locations · Sky Base · Spawn / Island · Water · Fishing Spot · Shop · Casino · Boat · **Any NPC** · Selected Player · Random Location · 100m Up · Under Map · Blink Forward · Teleport to Coordinates · Show My Coordinates · Load Island
 *Destinations come from the island you're currently on.*
+
+### ☁️ Sky Base
+Builds a floating base **180m above the island**: a glowing platform with railings, light pillars and a lookout tower. Teleport there with **F7** or from the menu, teleport back to the island, rebuild or remove it.
+*It's built on your own game, so only you can see it and stand on it. Friends without KRAKEN will fall.*
+
+### 💾 Saved Locations
+Quick **Save / Load Location** (F5 / F6) plus a list of named saved locations. They're saved to `BepInEx/config/kraken_locations.txt`, so they're still there after you restart the game.
 
 ### 06 · Vehicle Menu
 Super Boat Speed · Boat Speed Multiplier · Speed Boost · Flying Boat · Drive on Land · Boat Jump · Launch Boat · Flip Boat · Boat Spin · Teleport Boat to Me · Teleport to Boat · Rainbow Boat · Boat Size · Invisible Boat

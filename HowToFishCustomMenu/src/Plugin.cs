@@ -32,6 +32,7 @@ namespace HowToFishCustomMenu
         {
             menuKey = Config.Bind("Keys", "MenuKey", KeyCode.Insert, "Opens/closes the mod menu");
             flySpeed = Config.Bind("Movement", "FlySpeed", 14f, "Fly speed");
+            BindKeys();
             Bridge = new GameBridge();
             Patches.Bridge = Bridge;
             Patches.SilentAimTarget = from =>
@@ -87,18 +88,20 @@ namespace HowToFishCustomMenu
                 if (editing != null) editing.SetText(text);
                 return;
             }
-            if (rows.Count == 0) { if (Input.GetKeyDown(KeyCode.Backspace)) Back(); return; }
-            if (Pressed(KeyCode.UpArrow)) menu.Selected = (menu.Selected - 1 + rows.Count) % rows.Count;
-            if (Pressed(KeyCode.DownArrow)) menu.Selected = (menu.Selected + 1) % rows.Count;
+            if (capturing != null) return;
+            if (rows.Count == 0) { if (NavBack()) Back(); return; }
+            bool up = NavUp();
+            if (up) menu.Selected = (menu.Selected - 1 + rows.Count) % rows.Count;
+            if (NavDown()) menu.Selected = (menu.Selected + 1) % rows.Count;
             menu.Selected = Mathf.Clamp(menu.Selected, 0, rows.Count - 1);
             // Skip non-interactive labels in the direction of travel.
             for (int guard = 0; guard < rows.Count && rows[menu.Selected].Kind == OptionKind.Label; guard++)
-                menu.Selected = (menu.Selected + (Input.GetKey(KeyCode.UpArrow) ? rows.Count - 1 : 1)) % rows.Count;
+                menu.Selected = (menu.Selected + (up ? rows.Count - 1 : 1)) % rows.Count;
             var o = rows[menu.Selected];
-            if (Pressed(KeyCode.LeftArrow)) Adjust(o, -1);
-            if (Pressed(KeyCode.RightArrow)) Adjust(o, 1);
-            if (Input.GetKeyDown(KeyCode.Space)) Activate(o);
-            if (Input.GetKeyDown(KeyCode.Backspace)) Back();
+            if (NavLeft()) Adjust(o, -1);
+            if (NavRight()) Adjust(o, 1);
+            if (NavSelect()) Activate(o);
+            if (NavBack()) { if (stack.Count == 0 && PadDown(p => p.buttonEast)) SetOpen(false); else Back(); }
         }
         private void Back() { if (stack.Count > 0) stack.Pop(); }
         private void Adjust(Option o, int dir)
@@ -133,7 +136,8 @@ namespace HowToFishCustomMenu
         // ---------------- Frame loop ----------------
         private void Update()
         {
-            if (Input.GetKeyDown(menuKey.Value)) SetOpen(!shown);
+            if (capturing == null && (Input.GetKeyDown(menuKey.Value) || PadMenuCombo())) SetOpen(!shown);
+            try { TickHotkeys(); } catch (Exception ex) { Logger.LogWarning("Hotkeys: " + ex.Message); }
             if (shown)
             {
                 Navigate();
