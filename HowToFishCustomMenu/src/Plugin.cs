@@ -20,6 +20,7 @@ namespace HowToFishCustomMenu
         private GUIStyle title, subtitle, entry, active, info, section;
         private Texture2D black, green, dark, tint;
         private bool shown, fly, boatBoost, god, disco, rainbow, cameraRoll, slowMotion, chaos, miniHud;
+        private bool activateSelected;
         private int page, selected, maxSelection;
         private Vector3 savedPosition;
         private bool hasSavedPosition, gravitySaved, oldGravity;
@@ -49,6 +50,7 @@ namespace HowToFishCustomMenu
                 if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace)) { if (page != 0) { page = 0; selected = 0; } else shown = false; }
                 if (Input.GetKeyDown(KeyCode.UpArrow)) selected = Math.Max(0, selected - 1);
                 if (Input.GetKeyDown(KeyCode.DownArrow)) selected = Mathf.Min(Math.Max(0, maxSelection - 1), selected + 1);
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) activateSelected = true;
                 if (Input.GetKeyDown(KeyCode.LeftArrow) && page > 0) { page--; selected = 0; }
                 if (Input.GetKeyDown(KeyCode.RightArrow) && page < tabs.Length - 1) { page++; selected = 0; }
             }
@@ -240,6 +242,7 @@ namespace HowToFishCustomMenu
             }
             maxSelection = row;
             selected = Mathf.Clamp(selected, 0, Math.Max(0, row - 1));
+            if (row == 0) activateSelected = false;
             GUI.EndGroup();
             GUI.Label(new Rect(22, 491, W - 44, 26), message, info);
             GUI.Label(new Rect(22, 523, W - 44, 24), "↑↓ SELECT    ENTER ACTIVATE    ←→ CATEGORY    BACKSPACE BACK    INSERT CLOSE", subtitle);
@@ -252,14 +255,29 @@ namespace HowToFishCustomMenu
         private bool Button(string s, bool available = true)
         {
             int index = row++;
+            Rect bounds = new Rect(8, y, 595, 30);
+            Event current = Event.current;
+            // Standard IMGUI buttons retain keyboard focus even after the green row moves.
+            // Draw a passive row and handle activation ourselves so Enter always selects
+            // the highlighted entry, not whichever button Unity focused previously.
+            bool mouseClick = available && current.type == EventType.MouseDown
+                && current.button == 0 && bounds.Contains(current.mousePosition);
+            if (mouseClick)
+            {
+                selected = index;
+                current.Use();
+            }
+            bool keyboardClick = index == selected && activateSelected
+                && current.type == EventType.Layout;
+            if (keyboardClick) activateSelected = false; // Also consume on disabled rows.
+
             bool on = index == selected;
-            bool wasEnabled = GUI.enabled; GUI.enabled = available;
-            bool clicked = GUI.Button(new Rect(8, y, 595, 30), (on ? "➤  " : "     ") + s, on ? active : entry);
-            if (on && Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter))
-            { clicked = available; Event.current.Use(); }
+            bool wasEnabled = GUI.enabled;
+            GUI.enabled = available;
+            GUI.Box(bounds, (on ? "➤  " : "     ") + s, on ? active : entry);
             GUI.enabled = wasEnabled;
             y += 32f;
-            return clicked;
+            return available && (mouseClick || keyboardClick);
         }
         private void Text(string s) { GUI.Label(new Rect(13, y, 580, 43), s, info); y += 43f; }
         private void Go(int n) { page = n; selected = 0; }
