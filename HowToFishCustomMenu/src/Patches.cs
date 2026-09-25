@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -18,7 +19,7 @@ namespace HowToFishCustomMenu
         public static int ForcedRoulette = -1; // -1 off, 0 Black, 1 Red, 2 Green (BetColor order)
         public static bool GuaranteedWin;
         public static float WinningsMultiplier = 1f;
-        public static Func<Vector3, Vector3?> SilentAimTarget; // camera pos -> target point
+        public static Func<Vector3, KeyValuePair<global::Item, Vector3>?> SilentAimTarget; // camera pos -> target creature + point
         public static GameBridge Bridge;
         public static string Report = "";
         private static float nextExplosion;
@@ -105,25 +106,43 @@ namespace HowToFishCustomMenu
             Bridge.ExplodeAt(hit.point + hit.normal * .3f);
         }
 
-        private static void AddProjectilePrefix(bool isLocal, ref Vector3 pos, ref Vector3 velocity)
+        // Silent aim. Bullets are deleted 0.5m under the water and most targets are fish,
+        // so redirecting the bullet alone misses. Instead the shot is applied straight to the
+        // target through Item.LocalHit, the same call Weapon.Shoot uses for point-blank hits,
+        // and the visible bullet is bent toward it.
+        private static void SilentHit(global::Player owner, global::WeaponInfo info, Vector3 pos, int pellets, Action<Vector3> redirect)
         {
-            if (!SilentAim || !isLocal) return;
-            // Weapon.Shoot moves pos far below the map when its point-blank ray already hit.
-            if (pos.y < -5000f) return;
             var target = SilentAimTarget?.Invoke(pos);
-            if (target.HasValue) velocity = (target.Value - pos).normalized * velocity.magnitude;
+            if (!target.HasValue || owner == null) return;
+            var item = target.Value.Key;
+            Vector3 point = target.Value.Value, dir = (point - pos).normalized;
+            int damage = owner.Holding?.HeldItem?.Weapon != null ? owner.Holding.HeldItem.Weapon.Damage : info.ProjectileDamage;
+            for (int i = 0; i < pellets; i++)
+                item.LocalHit(item.transform, point, dir, owner, damage, true, dir * info.ProjectileForce);
+            redirect(dir);
+            if (ExplosiveBullets && Bridge != null && Bridge.IsHost) Bridge.ExplodeAt(point);
         }
 
-        private static void AddProjectilesPrefix(bool isLocal, ref Vector3 pos, ref Vector3[] velocities)
+        private static void AddProjectilePrefix(global::Player owner, global::WeaponInfo weaponInfo, bool isLocal, ref Vector3 pos, ref Vector3 velocity, bool fromNpc)
         {
-            if (!SilentAim || !isLocal || velocities == null || velocities.Length == 0 || pos.y < -5000f) return;
-            var target = SilentAimTarget?.Invoke(pos);
-            if (!target.HasValue) return;
-            Vector3 mean = Vector3.zero;
-            foreach (var v in velocities) mean += v;
-            Quaternion shift = Quaternion.FromToRotation(mean.normalized, (target.Value - pos).normalized);
-            var copy = new Vector3[velocities.Length];
-            for (int i = 0; i < velocities.Length; i++) copy[i] = shift * velocities[i];
+            if (!SilentAim || !isLocal || fromNpc || owner != global::Player.LocalPlayer || pos.y < -5000f) return;
+            Vector3 v = velocity, result = velocity;
+            SilentHit(owner, weaponInfo, pos, 1, dir => result = dir * v.magnitude);
+            velocity = result;
+        }
+
+        private static void AddProjectilesPrefix(global::Player owner, global::WeaponInfo weaponInfo, bool isLocal, ref Vector3 pos, ref Vector3[] velocities)
+        {
+            if (!SilentAim || !isLocal || owner != global::Player.LocalPlayer || velocities == null || velocities.Length == 0 || pos.y < -5000f) return;
+            var vels = velocities; var copy = vels;
+            Vector3 start = pos;
+            SilentHit(owner, weaponInfo, pos, vels.Length, dir =>
+            {
+                Vector3 mean = Vector3.zero;
+                foreach (var v in vels) mean += v;
+                var shift = Quaternion.FromToRotation(mean.normalized, dir);
+                copy = vels.Select(v => shift * v).ToArray();
+            });
             velocities = copy;
         }
 

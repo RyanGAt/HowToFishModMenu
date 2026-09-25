@@ -23,13 +23,8 @@ namespace HowToFishCustomMenu
             m.Sub("WEAPON & TOOL MENU", WeaponMenu);
             m.Sub("ITEM SPAWNER", ItemMenu);
             m.Sub("TELEPORT MENU", TeleportMenu);
-            m.Sub("SKY BASE", SkyBaseMenu);
             m.Sub("VEHICLE MENU", VehicleMenu);
-            m.Sub("KRAKEN WATER CAR", CarMenu);
-            m.Sub("ISLAND TELEPORT", IslandMenu);
-            m.Action("UNLOCK ALL [HOST]", () => Note(UnlockAll()), IsHostNow, NeedHost);
             m.Sub("EXTRAS", ExtrasMenu);
-            m.Sub("BOSS SPAWNER", BossMenu);
             m.Sub("PLAYERS", PlayerListMenu);
             m.Sub("TROLL MENU", TrollMenu);
             m.Sub("FUN MENU", FunMenu);
@@ -60,7 +55,6 @@ namespace HowToFishCustomMenu
             m.Slider("JUMP MULTIPLIER", () => jumpMult, v => { jumpMult = v; Bridge.SetJumpMultiplier(v); }, 1f, 15f, .5f, "0.0x");
             m.Action("SUPER JUMP (5X)", () => { jumpMult = 5f; Result("Super jump", Bridge.SetJumpMultiplier(5f)); }, InWorld, NeedPlayer);
             m.Toggle("INFINITE JUMP", () => airJump, v => airJump = v);
-            m.Slider("GRAVITY MULTIPLIER [HOST]", () => gravityMult, SetGravity, 0f, 3f, .1f, "0.0x");
             m.Action("MOON GRAVITY [HOST]", () => { SetGravity(.2f); Note("Moon gravity"); }, IsHostNow, NeedHost);
             m.Action("ZERO GRAVITY [HOST]", () => { SetGravity(0f); Note("Zero gravity"); }, IsHostNow, NeedHost);
             m.Action("NORMAL GRAVITY", () => { SetGravity(1f); Note("Gravity restored"); });
@@ -105,7 +99,6 @@ namespace HowToFishCustomMenu
             m.Slider("FISH WEIGHT MULTIPLIER", () => weightMult, v => weightMult = v, .5f, 10f, .5f, "0.0x");
             m.Action("APPLY WEIGHT TO ALL FISH [HOST]", () => Note("Weight x" + weightMult + " on " + Bridge.MultiplyWorldValues(1f, weightMult, true) + " fish"), IsHostNow, NeedHost);
             m.Action("RESIZE ALL FISH (HOST VIEW)", () => Note("Resized " + Bridge.ScaleWorldItems(fishScale, true) + " fish"));
-            m.Toggle("FISH CANNON (MIDDLE MOUSE)", () => fishCannon, v => fishCannon = v, IsHostNow, NeedHost);
             return m;
         }
         private void ExplodeNearbyFish()
@@ -129,7 +122,6 @@ namespace HowToFishCustomMenu
             m.Toggle("TARGET PREDICTION", () => aimPrediction, v => aimPrediction = v);
             m.Toggle("SILENT AIM", () => Patches.SilentAim, v => Patches.SilentAim = v);
             m.Toggle("TRIGGERBOT", () => triggerbot, v => triggerbot = v);
-            m.Toggle("EXPLOSIVE BULLETS [HOST]", () => Patches.ExplosiveBullets, v => Patches.ExplosiveBullets = v, IsHostNow, NeedHost);
             m.Action("UNFAIR AIMBOT PRESET", () => { aimEnabled = aimWide = aimPrediction = triggerbot = true; aimAdsOnly = aimSmooth = false; Note("UNFAIR AIMBOT ENGAGED"); });
             m.Label("Targets fish & sea creatures only.");
             return m;
@@ -184,7 +176,6 @@ namespace HowToFishCustomMenu
             m.Action("DELETE NEARBY ITEMS (15M)", () => Note("Deleted " + Bridge.DeleteNearbyItems(15f) + " items"), IsHostNow, NeedHost);
             m.Slider("ITEM SIZE (SPAWNED)", () => itemScale, v => itemScale = v, .2f, 6f, .2f, "0.0x");
             m.Action("APPLY VALUE MULTIPLIER TO ALL ITEMS", () => Note("Value x" + valueMult + " on " + Bridge.MultiplyWorldValues(valueMult, 1f, false) + " items"), IsHostNow, NeedHost);
-            m.Toggle("FLOATING ITEMS", () => floatingItems, v => floatingItems = v, IsHostNow, NeedHost);
             m.Action("ITEM RAIN (20)", () =>
             {
                 var all = Bridge.Spawnables(); var p = Bridge.Player.position;
@@ -238,7 +229,6 @@ namespace HowToFishCustomMenu
             m.Sub("SAVED LOCATIONS", LocationsMenu);
             m.Sub("SKY BASE", SkyBaseMenu);
             m.Sub("ISLAND TELEPORT", IslandMenu);
-            m.Sub("RACE TRACK", TrackMenu);
             m.Action("TELEPORT TO SPAWN / ISLAND", () => Go(Bridge.IslandCentre.HasValue ? Bridge.Grounded(Bridge.IslandCentre.Value) : (Vector3?)null, "Island"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO WATER", () => Go(Bridge.OpenWater(90f), "Open water"), InWorld, NeedPlayer);
             m.Action("TELEPORT TO FISHING SPOT", () => Go(Bridge.OpenWater(45f), "Fishing spot"), InWorld, NeedPlayer);
@@ -300,7 +290,6 @@ namespace HowToFishCustomMenu
             m.Action("FLIP BOAT", () => Result("Boat flipped", Bridge.BoatImpulse(Vector3.up * 8f, Bridge.BoatBody.transform.forward * 8f)), boat, needBoat);
             m.Toggle("BOAT SPIN", () => boatSpin, v => boatSpin = v, boat, needBoat);
             m.Action("TELEPORT BOAT TO ME", () => Result("Boat moved", Bridge.MoveBoat(Bridge.OpenWater(Vector3.Distance(Bridge.Player.position, Bridge.IslandCentre ?? Vector3.zero) + 6f), Quaternion.identity)), boat, needBoat);
-            m.Action("TELEPORT TO BOAT", () => Go(Bridge.BoatDriverSeat + Vector3.up, "Boat"), InWorld, NeedPlayer);
             m.Toggle("RAINBOW BOAT (LOCAL VIEW)", () => rainbowBoat, v => rainbowBoat = v);
             m.Slider("BOAT SIZE (LOCAL VIEW)", () => boatScale, v => { boatScale = v; if (Bridge.BoatVisual != null) Bridge.BoatVisual.localScale = Vector3.one * v; }, .2f, 5f, .2f, "0.0x");
             m.Action("INVISIBLE BOAT (LOCAL VIEW)", () => { var b = Bridge.BoatVisual; if (b == null) return; foreach (var r in b.GetComponentsInChildren<Renderer>()) r.enabled = !r.enabled; });
@@ -401,7 +390,6 @@ namespace HowToFishCustomMenu
             var m = funMenu = new Menu("FUN MENU");
             m.Toggle("DISCO MODE", () => disco, v => disco = v);
             m.Toggle("RAINBOW WORLD", () => rainbowWorld, v => { SetFog(null, null); rainbowWorld = v; if (!v) RestoreWorldVisuals(); });
-            m.Toggle("RAINBOW MOD MENU", () => rainbowMenu, v => rainbowMenu = v);
             m.Toggle("EVERYTHING FLOATS [HOST]", () => floatingItems, v => floatingItems = v, IsHostNow, NeedHost);
             m.Toggle("EVERYTHING SPINS [HOST]", () => spinningItems, v => spinningItems = v, IsHostNow, NeedHost);
             m.Toggle("EVERYTHING BOUNCES [HOST]", () => bouncingItems, v => bouncingItems = v, IsHostNow, NeedHost);
@@ -431,10 +419,8 @@ namespace HowToFishCustomMenu
             m.Action("TELEPORT ALL PLAYERS TO ME", () => ForAll((p, i) => Bridge.TeleportPlayer(p, Bridge.Player.position + new Vector3(Mathf.Cos(i) * 2.5f, 1f, Mathf.Sin(i) * 2.5f))), IsHostNow, NeedHost);
             m.Action("HEAL LOBBY", () => ForAll((p, i) => Bridge.HealPlayer(p)), IsHostNow, NeedHost);
             m.Action("LAUNCH LOBBY", () => ForAll((p, i) => Bridge.KnockPlayer(p, Vector3.up * 35f)), IsHostNow, NeedHost);
-            m.Action("MOON GRAVITY LOBBY (OBJECTS)", () => SetGravity(.2f), IsHostNow, NeedHost);
             m.Action("FISH RAIN LOBBY", () => ForAll((p, i) => SpawnFishAround(Bridge.PlayerTransform(p).position + Vector3.up * 16f, 8, 6f, 1f) > 0), IsHostNow, NeedHost);
             m.Action("GIANT FISH LOBBY", () => ForAll((p, i) => SpawnFishAround(Bridge.PlayerTransform(p).position + Vector3.up * 4f, 2, 5f, 5f) > 0), IsHostNow, NeedHost);
-            m.Action("UNLIMITED MONEY LOBBY", () => { unlimitedMoney = true; Bridge.SetMoney(9999999); Note("Shared wallet maxed"); }, IsHostNow, NeedHost);
             m.Action("UNLIMITED ITEMS LOBBY", () => ForAll((p, i) => { var all = Bridge.Spawnables(); for (int k = 0; k < 5; k++) Bridge.SpawnPrefab(all[UnityEngine.Random.Range(0, all.Count)].Value, Bridge.PlayerTransform(p).position + Vector3.up * (2 + k * .4f), Quaternion.identity); return true; }), IsHostNow, NeedHost);
             m.Toggle("BOUNCE LOBBY", () => bouncing.Count > 0, v => ForAllSet(bouncing, v), IsHostNow, NeedHost);
             m.Toggle("FISH RAIN LOBBY (CONTINUOUS)", () => rainOn.Count > 0, v => ForAllSet(rainOn, v), IsHostNow, NeedHost);
@@ -472,7 +458,6 @@ namespace HowToFishCustomMenu
             m.Slider("MULTIPLY WINNINGS", () => Patches.WinningsMultiplier, v => Patches.WinningsMultiplier = v, 1f, 20f, 1f, "0x");
             m.Action("JACKPOT MODE", () => { Patches.ForcedRoulette = 2; Patches.WinningsMultiplier = 10f; Note("JACKPOT: bet GREEN"); });
             m.Action("CASINO CHAOS (RANDOM FORCE)", () => { Patches.ForcedRoulette = UnityEngine.Random.Range(0, 3); Note("Next result rigged: " + new[] { "BLACK", "RED", "GREEN" }[Patches.ForcedRoulette]); });
-            m.Action("TELEPORT TO CASINO", () => Go(Bridge.Casino.HasValue ? Bridge.Grounded(Bridge.Casino.Value + Vector3.forward * 3f) : (Vector3?)null, "Casino"), InWorld, NeedPlayer);
             m.Label("Roulette rigging applies when YOU host.");
             return m;
         }
@@ -485,15 +470,9 @@ namespace HowToFishCustomMenu
             var m = worldMenu = new Menu("WORLD MENU");
             m.Slider("WORLD GRAVITY [HOST]", () => gravityMult, SetGravity, 0f, 3f, .1f, "0.0x");
             m.Action("FREEZE TIME", () => SetTimeScale(timeScale > .01f ? 0f : 1f));
-            m.Action("SPEED UP PHYSICS", () => SetTimeScale(2f));
-            m.Action("NORMAL TIME", () => SetTimeScale(1f));
             m.Toggle("NO FOG", () => noFog, v => SetFog(v, null));
             m.Toggle("SUPER FOG", () => superFog, v => SetFog(null, v));
             m.Choice("TIME OF DAY (LOCAL)", new[] { "DEFAULT", "DAY", "SUNRISE", "SUNSET", "NIGHT" }, () => timeOfDay, SetTimeOfDay);
-            m.Action("SPAWN RANDOM OBJECTS (10)", () => { var all = Bridge.Spawnables(); for (int i = 0; i < 10; i++) QueueSpawn(all[UnityEngine.Random.Range(0, all.Count)].Value, 1); }, IsHostNow, NeedHost);
-            m.Action("DELETE NEARBY OBJECTS", () => Note("Deleted " + Bridge.DeleteNearbyItems(15f)), IsHostNow, NeedHost);
-            m.Slider("OBJECT SIZE (SPAWNED)", () => itemScale, v => itemScale = v, .2f, 6f, .2f, "0.0x");
-            m.Action("LAUNCH NEARBY OBJECTS", () => LaunchNearby(25f), IsHostNow, NeedHost);
             m.Action("RESET WORLD", () => { SetGravity(1f); SetTimeScale(1f); RestoreWorldVisuals(); SetTimeOfDay(0); });
             return m;
         }
@@ -502,7 +481,7 @@ namespace HowToFishCustomMenu
         {
             if (sun == null)
             {
-                sun = RenderSettings.sun ?? FindObjectsOfType<Light>().FirstOrDefault(l => l.type == LightType.Directional);
+                sun = RenderSettings.sun ?? FindObjectsByType<Light>(FindObjectsSortMode.None).FirstOrDefault(l => l.type == LightType.Directional);
                 if (sun == null) { Note("No sun light found"); return; }
                 sunRot = sun.transform.rotation; sunIntensity = sun.intensity; sunColour = sun.color;
             }

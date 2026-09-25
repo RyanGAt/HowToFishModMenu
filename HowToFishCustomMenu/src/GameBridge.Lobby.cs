@@ -192,7 +192,7 @@ namespace HowToFishCustomMenu
             get
             {
                 var type = FindType("SellBox");
-                var box = type == null ? null : UnityEngine.Object.FindObjectOfType(type) as Component;
+                var box = type == null ? null : UnityEngine.Object.FindFirstObjectByType(type) as Component;
                 return box != null ? box.transform.position : (Vector3?)null;
             }
         }
@@ -209,7 +209,7 @@ namespace HowToFishCustomMenu
             var list = new List<KeyValuePair<string, Vector3>>();
             var type = FindType("NPC");
             if (type == null) return list;
-            foreach (var o in UnityEngine.Object.FindObjectsOfType(type))
+            foreach (var o in UnityEngine.Object.FindObjectsByType(type, FindObjectsSortMode.None))
                 if (o is Component c) list.Add(new KeyValuePair<string, Vector3>(c.name.Replace("(Clone)", "").Trim(), c.transform.position));
             return list;
         }
@@ -262,17 +262,18 @@ namespace HowToFishCustomMenu
             return explosive != null && InvokeAction(explosive, "ForceExplode", localPlayer, true);
         }
         // Best live creature target seen from `from`, for aimbot and silent aim.
+        // Best live creature target seen from `from`, for aimbot and silent aim.
         public Vector3? AimPoint(Vector3 from, Vector3 forward, bool wide, bool predict, float projectileSpeed)
+            => AimTarget(from, forward, wide, predict, projectileSpeed)?.Value;
+        public KeyValuePair<global::Item, Vector3>? AimTarget(Vector3 from, Vector3 forward, bool wide, bool predict, float projectileSpeed)
         {
-            Vector3? best = null;
+            KeyValuePair<global::Item, Vector3>? best = null;
             float bestScore = float.MaxValue;
-            var gameInfo = FindType("GameInfo");
-            int mask = Mask(GetMember(gameInfo, "LevelLayer")) | Mask(GetMember(gameInfo, "BoatLayer"));
+            int mask = global::GameInfo.LevelLayer.value | global::GameInfo.BoatLayer.value;
             foreach (var pair in WorldItems())
             {
-                var creature = GetMember(pair.Value, "Creature");
-                if (creature == null || GetMember(creature, "IsDead") is bool dead && dead) continue;
-                var rig = GetMember(creature, "Rig") as Rigidbody;
+                if (!(pair.Value is global::Item item) || item.Creature == null || item.Creature.IsDead || item.IsDestroying) continue;
+                var rig = item.Rig;
                 Vector3 p = rig != null ? rig.worldCenterOfMass : pair.Key.position + Vector3.up;
                 if (predict && rig != null) p += rig.linearVelocity * Mathf.Clamp(Vector3.Distance(from, p) / Mathf.Max(projectileSpeed, 1f), 0f, 1.5f);
                 Vector3 d = p - from;
@@ -282,7 +283,7 @@ namespace HowToFishCustomMenu
                 if (!wide && align < .5f) continue;
                 if (Physics.Linecast(from, p, mask, QueryTriggerInteraction.Ignore)) continue;
                 float score = (wide ? 0f : (1f - align) * 3f) + dist / 80f;
-                if (score < bestScore) { bestScore = score; best = p; }
+                if (score < bestScore) { bestScore = score; best = new KeyValuePair<global::Item, Vector3>(item, p); }
             }
             return best;
         }

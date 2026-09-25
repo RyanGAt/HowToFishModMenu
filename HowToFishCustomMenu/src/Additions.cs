@@ -395,6 +395,7 @@ namespace HowToFishCustomMenu
         {
             if (extrasMenu != null) return extrasMenu;
             var m = extrasMenu = new Menu("EXTRAS");
+            m.Action("UNLOCK ALL [HOST]", () => Note(UnlockAll()), IsHostNow, NeedHost);
             m.Sub("BOSS SPAWNER", BossMenu);
             m.Action("SEAGULL ARMY ON TARGET", () =>
             {

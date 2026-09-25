@@ -39,7 +39,7 @@ namespace HowToFishCustomMenu
             Patches.SilentAimTarget = from =>
             {
                 var look = Bridge.LookTransform;
-                return look == null ? null : Bridge.AimPoint(from, look.forward, aimWide, aimPrediction, 80f);
+                return look == null ? null : Bridge.AimTarget(look.position, look.forward, aimWide, aimPrediction, 80f);
             };
             harmony = new Harmony("sunshineplunge.howtofish.custommenu");
             Patches.Apply(harmony, Logger);

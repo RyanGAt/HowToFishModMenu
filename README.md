@@ -95,7 +95,7 @@ God Mode [HOST] · Demi God (auto heal) · Never Hungry · Fly Mode · No Clip �
 Instant Catch · Auto Fish · Unlimited Bait · Fish Size · Spawn Random / Giant / Tiny Fish · Spawn Every Fish · Fish Rain · **Fish Tornado** · Fish Army · Fish Magnet · Flying Fish · Exploding Fish · Fish Value Multiplier (affects the real sale price) · Fish Weight Multiplier · Resize All Fish · Fish Cannon
 
 ### Aimbot Menu
-Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Silent Aim** · Triggerbot · **Explosive Bullets** · Unfair Aimbot preset
+Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Silent Aim** (hits fish even underwater) · Triggerbot · Unfair Aimbot preset
 *Targets fish and sea creatures only.*
 
 ### 03 · Weapon & Tool Menu
