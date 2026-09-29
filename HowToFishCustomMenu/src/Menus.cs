@@ -627,7 +627,7 @@ namespace HowToFishCustomMenu
             m.Choice("MENU POSITION", new[] { "RIGHT", "LEFT", "CENTRE" }, () => menuPos, v => menuPos = v);
             m.Slider("MENU SCALE", () => menuScale, v => menuScale = v, .7f, 1.6f, .1f, "0.0x");
             m.Slider("FLY SPEED", () => flySpeed.Value, v => flySpeed.Value = v, 4f, 60f, 2f, "0");
-            m.Toggle("ANNOUNCE KRAKEN IN CHAT", () => announceChat.Value, v => { announceChat.Value = v; Config.Save(); });
+            m.Toggle("CHAT KILL-FEED / ANNOUNCEMENTS", () => announceChat.Value, v => { announceChat.Value = v; Config.Save(); });
             m.Sub("KEYBINDS", KeybindMenu);
             m.Action("SAVE CONFIG", () => { Config.Save(); Note("Config saved"); });
             m.Label("Emergency menu open: CTRL + INSERT");

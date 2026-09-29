@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.3.0
+
+- Rebuilt for the 29 September 2026 game update (bows, ground bait, currency). The update changed `Item.LocalHit`, which made v1.2.0 throw errors every frame and broke kill aura, boss rush, presets and the startup banner. They all work again.
+- **No Sway**, **Big Laser** (a laser sight 20x longer and brighter) and a **Custom Crosshair** (plus / dot / X, adjustable size).
+- **Ctrl + Insert** emergency open, and **Reset Keybinds**.
+- The item list search shows match counts and has a clear-search row.
+- Chat kill-feed and announcements are now a single saved setting in Settings, off by default. **Say KRAKEN in chat** still works on demand.
+
 ## v1.2.0 — KRAKEN
 
 The first public release. The menu has been rebuilt as **KRAKEN**, an old-school COD-style modded-lobby menu.

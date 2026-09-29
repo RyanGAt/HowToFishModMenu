@@ -16,13 +16,11 @@ namespace HowToFishCustomMenu
         // ---------------- Chat kill-feed ----------------
         // The host sends through the game's own OnlineChatManager ObserversRpc using the lobby
         // id as sender, so every player (modded or not) sees "[Server] KRAKEN // ...".
-        private bool killFeed = true;
-        private ConfigEntry<bool> announceChat;
+        private ConfigEntry<bool> announceChat; // single saved setting for all automatic chat posts
         private float nextChat;
         private void Announce(string text, bool force = false)
         {
             if (announceChat == null || !announceChat.Value) return;
-            if (!killFeed && !force) return;
             if (!Host || Time.unscaledTime < nextChat) return;
             nextChat = Time.unscaledTime + .35f; // don't flood the chat
             try
@@ -47,7 +45,7 @@ namespace HowToFishCustomMenu
         }
         private void AnnounceOption(Option o)
         {
-            if (!killFeed || !Host || o.Kind == OptionKind.Submenu || o.Kind == OptionKind.Input || o.Kind == OptionKind.Label) return;
+            if (announceChat == null || !announceChat.Value || !Host || o.Kind == OptionKind.Submenu || o.Kind == OptionKind.Input || o.Kind == OptionKind.Label) return;
             string name = System.Text.RegularExpressions.Regex.Replace(o.Display, @"\s*\[.*?\]|\s*\(.*?\)", "").Trim();
             if (Current.Targeted && target != null && o.Kind == OptionKind.Action && !name.StartsWith("TARGET"))
                 Announce(Bridge.PlayerName(target) + " GOT " + name.Replace(" PLAYER", "").Replace("PLAYER ", "") + "!");
@@ -427,7 +425,6 @@ namespace HowToFishCustomMenu
             m.Choice("CAMERA", CamModes, () => camMode, SetCamMode);
             m.Slider("THIRD PERSON DISTANCE", () => thirdDistance, v => thirdDistance = v, 2f, 12f, .5f, "0.0m");
             m.Sub("PRESETS", PresetMenu);
-            m.Toggle("CHAT KILL-FEED (HOST)", () => killFeed, v => killFeed = v);
             m.Action("SAY KRAKEN IN CHAT", () => SendChatNow("THIS LOBBY IS POWERED BY KRAKEN v" + Version), IsHostNow, NeedHost);
             m.Toggle("MENU SOUNDS", () => menuSounds, v => menuSounds = v);
             return m;

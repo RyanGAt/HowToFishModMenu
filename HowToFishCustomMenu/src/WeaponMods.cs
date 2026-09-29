@@ -8,7 +8,8 @@ namespace HowToFishCustomMenu
     {
         private object modifiedWeapon;
         private readonly Dictionary<string, object> originalWeaponValues = new Dictionary<string, object>();
-        private readonly Dictionary<FieldInfo, KeyValuePair<object, object>> originalSwayValues = new Dictionary<FieldInfo, KeyValuePair<object, object>>();
+        private readonly Dictionary<KeyValuePair<FieldInfo, object>, object> originalSwayValues = new Dictionary<KeyValuePair<FieldInfo, object>, object>();
+        private readonly Dictionary<global::LaserSight, float> originalLaserLengths = new Dictionary<global::LaserSight, float>();
         private readonly Dictionary<UnityEngine.LineRenderer, float> originalLaserWidths = new Dictionary<UnityEngine.LineRenderer, float>();
         private readonly Dictionary<UnityEngine.Light, float[]> originalLaserLights = new Dictionary<UnityEngine.Light, float[]>();
         private static readonly BindingFlags WeaponFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
@@ -39,8 +40,6 @@ namespace HowToFishCustomMenu
                     catch (Exception) { /* A despawned weapon can no longer be restored. */ }
                 }
             }
-            RestoreSway();
-            RestoreBigLaser();
             RestoreSway();
             RestoreBigLaser();
             modifiedWeapon = null;
@@ -102,19 +101,24 @@ namespace HowToFishCustomMenu
             }
 
             ZeroSwayFields(weapon);
-            ZeroSwayFields(GetMember(weapon, "Attachments"));
+            // Each sight has its own aim-sway multiplier.
+            if (GetMember(weapon, "Attachments") is object attachments &&
+                attachments.GetType().GetField("_sights", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(attachments) is System.Collections.IEnumerable sights)
+                foreach (var sight in sights) ZeroSwayFields(sight);
         }
 
         private void ZeroSwayFields(object target)
         {
             if (target == null) return;
-            foreach (var field in target.GetType().GetFields(WeaponFlags))
+            // Walk the class hierarchy: private fields of base classes (Tool) aren't returned otherwise.
+            for (var type = target.GetType(); type != null && type != typeof(UnityEngine.MonoBehaviour); type = type.BaseType)
+            foreach (var field in type.GetFields(WeaponFlags | BindingFlags.DeclaredOnly))
             {
                 if (field.Name.IndexOf("sway", StringComparison.OrdinalIgnoreCase) < 0) continue;
                 try
                 {
-                    if (!originalSwayValues.ContainsKey(field))
-                        originalSwayValues[field] = new KeyValuePair<object, object>(target, field.GetValue(target));
+                    var key = new KeyValuePair<FieldInfo, object>(field, target);
+                    if (!originalSwayValues.ContainsKey(key)) originalSwayValues[key] = field.GetValue(target);
 
                     if (field.FieldType == typeof(float)) field.SetValue(target, 0f);
                     else if (field.FieldType == typeof(double)) field.SetValue(target, 0d);
@@ -129,7 +133,7 @@ namespace HowToFishCustomMenu
         {
             foreach (var pair in originalSwayValues)
             {
-                try { pair.Key.SetValue(pair.Value.Key, pair.Value.Value); }
+                try { if (pair.Key.Value is UnityEngine.Object o && o != null) pair.Key.Key.SetValue(pair.Key.Value, pair.Value); }
                 catch { }
             }
             originalSwayValues.Clear();
@@ -169,6 +173,15 @@ namespace HowToFishCustomMenu
                 line.widthMultiplier = UnityEngine.Mathf.Max(original * 3f, .025f);
             }
 
+            // The laser sight's beam is only 5m long; stretch it so it reaches targets.
+            var laserLength = typeof(global::LaserSight).GetField("_laserLength", BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (var laser in component.GetComponentsInChildren<global::LaserSight>(true))
+            {
+                if (laserLength == null) break;
+                if (!originalLaserLengths.ContainsKey(laser)) originalLaserLengths[laser] = (float)laserLength.GetValue(laser);
+                laserLength.SetValue(laser, originalLaserLengths[laser] * 20f);
+            }
+
             foreach (var light in component.GetComponentsInChildren<UnityEngine.Light>(true))
             {
                 if (!LooksLikeLaser(light)) continue;
@@ -203,6 +216,14 @@ namespace HowToFishCustomMenu
                 catch { }
             }
             originalLaserLights.Clear();
+
+            var laserLength = typeof(global::LaserSight).GetField("_laserLength", BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (var pair in originalLaserLengths)
+            {
+                try { if (pair.Key != null) laserLength?.SetValue(pair.Key, pair.Value); }
+                catch { }
+            }
+            originalLaserLengths.Clear();
         }
 
         // Host only: attachment/bullet levels are server SyncVars, so this writes them directly.
