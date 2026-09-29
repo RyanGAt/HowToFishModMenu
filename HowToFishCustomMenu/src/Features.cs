@@ -26,7 +26,10 @@ namespace HowToFishCustomMenu
         // Weapons / aim
         private bool noRecoil, instantReload;
         private float damageMult = 1f;
-        private bool infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick, fishCannon;
+        private bool infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick, fishCannon, noSway, bigLaser;
+        private bool crosshair;
+        private int crosshairStyle;
+        private float crosshairSize = 12f;
         private bool aimEnabled, aimAdsOnly = false, aimSmooth, aimWide, aimPrediction, triggerbot;
         private float nextTrigger, nextCannon;
         // Boat
@@ -155,7 +158,7 @@ namespace HowToFishCustomMenu
             Patches.NoRecoil = noRecoil; Patches.NoCooldown = noCooldown; Patches.DamageMultiplier = damageMult;
             if (instantReload) Bridge.InstantReload();
             try { TickCamera(); } catch (Exception ex) { Logger.LogWarning("Camera: " + ex.Message); }
-            Bridge.UpdateWeaponMods(infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick);
+            Bridge.UpdateWeaponMods(infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick, noSway, bigLaser);
         }
 
         private void TickPlayers()
@@ -334,7 +337,7 @@ namespace HowToFishCustomMenu
             floatingItems = spinningItems = bouncingItems = flyingFish = fishMagnet = fishTornado = false;
             freezePos.Clear(); spinning.Clear(); bouncing.Clear(); rainOn.Clear(); healAura.Clear();
             Patches.PersonalGod = Patches.ExplosiveBullets = Patches.SilentAim = false;
-            noRecoil = noCooldown = instantReload = false; damageMult = 1f;
+            noRecoil = noCooldown = instantReload = noSway = bigLaser = false; crosshair = false; damageMult = 1f;
             chaosOn = false;
         }
     }

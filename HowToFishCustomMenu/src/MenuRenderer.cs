@@ -54,6 +54,7 @@ namespace HowToFishCustomMenu
             DrawSpeedo(accent);
             DrawRaceHud(accent);
             DrawBanner(accent);
+            if (crosshair && !shown) DrawCrosshair(accent);
             if (Time.unscaledTime < chaosBannerUntil)
             {
                 Text(new Rect(0, Screen.height * .18f, Screen.width, 90), chaosEvent, centre, accent);
@@ -143,6 +144,35 @@ namespace HowToFishCustomMenu
             Text(new Rect(x, fy + 19, MenuW, 18), (rows.Count > 0 ? (menu.Selected + 1) + " / " + rows.Count : "") + "   v" + Version, small, Color.Lerp(accent, Color.white, .6f));
         }
         private bool SafeAvailable(Option o) { try { return o.Available(); } catch { return false; } }
+
+        private void DrawCrosshair(Color colour)
+        {
+            float cx = Screen.width * .5f;
+            float cy = Screen.height * .5f;
+            float s = Mathf.Max(4f, crosshairSize);
+            float t = Mathf.Max(2f, s * .16f);
+            float gap = Mathf.Max(2f, s * .28f);
+
+            if (crosshairStyle == 1)
+            {
+                Rect(new Rect(cx - t, cy - t, t * 2f, t * 2f), colour);
+                return;
+            }
+
+            if (crosshairStyle == 2)
+            {
+                Line(new Vector2(cx - s, cy - s), new Vector2(cx - gap, cy - gap), colour);
+                Line(new Vector2(cx + gap, cy + gap), new Vector2(cx + s, cy + s), colour);
+                Line(new Vector2(cx + gap, cy - gap), new Vector2(cx + s, cy - s), colour);
+                Line(new Vector2(cx - s, cy + gap), new Vector2(cx - gap, cy + s), colour);
+                return;
+            }
+
+            Rect(new Rect(cx - t / 2f, cy - s, t, s - gap), colour);
+            Rect(new Rect(cx - t / 2f, cy + gap, t, s - gap), colour);
+            Rect(new Rect(cx - s, cy - t / 2f, s - gap, t), colour);
+            Rect(new Rect(cx + gap, cy - t / 2f, s - gap, t), colour);
+        }
 
         private void DrawFeed(Color accent)
         {

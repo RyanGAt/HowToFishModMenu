@@ -138,6 +138,11 @@ namespace HowToFishCustomMenu
             m.Action("FULL UPGRADE HELD GUN [HOST]", () => { var err = Bridge.FullUpgrade(); Note(err == null ? "Gun fully upgraded: max bullets, best barrel, extended mag, laser" : "Full upgrade // " + err); }, IsHostNow, NeedHost);
             m.Action("CYCLE SIGHT [HOST]", () => { var err = Bridge.CycleSight(); Note(err == null ? "Sight changed" : "Sight // " + err); }, IsHostNow, NeedHost);
             m.Toggle("NO RECOIL", () => noRecoil, v => noRecoil = v);
+            m.Toggle("NO SWAY", () => noSway, v => noSway = v);
+            m.Toggle("BIG LASER", () => bigLaser, v => bigLaser = v, held, "HOLD A WEAPON");
+            m.Toggle("CUSTOM CROSSHAIR", () => crosshair, v => crosshair = v);
+            m.Choice("CROSSHAIR STYLE", new[] { "PLUS", "DOT", "X" }, () => crosshairStyle, v => crosshairStyle = v);
+            m.Slider("CROSSHAIR SIZE", () => crosshairSize, v => crosshairSize = v, 4f, 30f, 2f, "0");
             m.Slider("DAMAGE MULTIPLIER", () => damageMult, v => damageMult = v, 1f, 50f, 1f, "0x");
             m.Toggle("ONE SHOT KILL LOBBY [HOST]", () => Bridge.OneShotLobby, v => Bridge.OneShotLobby = v, IsHostNow, NeedHost);
             m.Toggle("UNLIMITED AMMO", () => infiniteAmmo, v => infiniteAmmo = v);
@@ -198,23 +203,43 @@ namespace HowToFishCustomMenu
         {
             if (itemList != null) return itemList;
             var m = itemList = new Menu("ITEM LIST");
-            var search = new Option { Kind = OptionKind.Input, Name = "SEARCH", GetText = () => itemSearch, SetText = v => itemSearch = v };
+            var search = new Option
+            {
+                Kind = OptionKind.Input,
+                NameFn = () => string.IsNullOrWhiteSpace(itemSearch) ? "SEARCH" : "SEARCH: " + itemSearch.ToUpperInvariant(),
+                GetText = () => itemSearch,
+                SetText = v => itemSearch = v
+            };
             List<KeyValuePair<string, object>> cache = null;
             m.Dynamic = () =>
             {
                 if (cache == null || cache.Count == 0) cache = Bridge.Spawnables();
                 var rows = new List<Option> { search };
                 string q = itemSearch.Replace(" ", "").ToLowerInvariant();
-                foreach (var p in cache)
+                var matches = cache.Where(p => q.Length == 0 || p.Key.Contains(q)).ToList();
+
+                if (!string.IsNullOrWhiteSpace(itemSearch))
+                    rows.Add(new Option { Kind = OptionKind.Action, Name = "CLEAR SEARCH  (" + matches.Count + " MATCHES)", OnSelect = () => itemSearch = "" });
+                else
+                    rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count + " ITEMS" });
+
+                foreach (var p in matches)
                 {
-                    if (q.Length > 0 && !p.Key.Contains(q)) continue;
                     var prefab = p.Value;
-                    rows.Add(new Option { Kind = OptionKind.Action, Name = p.Key.ToUpperInvariant(), OnSelect = () => { QueueSpawn(prefab, spawnQty); Note("Spawning " + spawnQty + " x " + p.Key); } });
+                    var key = p.Key;
+                    rows.Add(new Option
+                    {
+                        Kind = OptionKind.Action,
+                        Name = key.ToUpperInvariant(),
+                        OnSelect = () => { QueueSpawn(prefab, spawnQty); Note("Spawning " + spawnQty + " x " + key); }
+                    });
                 }
-                if (rows.Count == 1) rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count == 0 ? "Item list not loaded yet" : "No matches" });
+
+                if (matches.Count == 0)
+                    rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count == 0 ? "Item list not loaded yet" : "No matches" });
                 return rows;
             };
-            m.Footer = "SPACE ON SEARCH TO TYPE";
+            m.Footer = "SPACE ON SEARCH TO TYPE  //  BACKSPACE EDITS";
             return m;
         }
 
@@ -602,8 +627,10 @@ namespace HowToFishCustomMenu
             m.Choice("MENU POSITION", new[] { "RIGHT", "LEFT", "CENTRE" }, () => menuPos, v => menuPos = v);
             m.Slider("MENU SCALE", () => menuScale, v => menuScale = v, .7f, 1.6f, .1f, "0.0x");
             m.Slider("FLY SPEED", () => flySpeed.Value, v => flySpeed.Value = v, 4f, 60f, 2f, "0");
+            m.Toggle("CHAT KILL-FEED / ANNOUNCEMENTS", () => announceChat.Value, v => { announceChat.Value = v; Config.Save(); });
             m.Sub("KEYBINDS", KeybindMenu);
             m.Action("SAVE CONFIG", () => { Config.Save(); Note("Config saved"); });
+            m.Label("Emergency menu open: CTRL + INSERT");
             m.Label("Hooks: " + Patches.Report);
             m.Label("Controller: LB + D-PAD UP, A select, B back");
             return m;

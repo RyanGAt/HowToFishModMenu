@@ -11,7 +11,7 @@ namespace HowToFishCustomMenu
     [BepInPlugin("sunshineplunge.howtofish.custommenu", "KRAKEN - Modded Lobby Edition", Version)]
     public sealed partial class Plugin : BaseUnityPlugin
     {
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
         internal GameBridge Bridge;
         private Harmony harmony;
         private ConfigEntry<KeyCode> menuKey;
@@ -138,7 +138,7 @@ namespace HowToFishCustomMenu
         // ---------------- Frame loop ----------------
         private void Update()
         {
-            if (capturing == null && (Input.GetKeyDown(menuKey.Value) || PadMenuCombo())) SetOpen(!shown);
+            if (capturing == null && MenuOpenPressed()) SetOpen(!shown);
             try { TickHotkeys(); } catch (Exception ex) { Logger.LogWarning("Hotkeys: " + ex.Message); }
             if (shown)
             {

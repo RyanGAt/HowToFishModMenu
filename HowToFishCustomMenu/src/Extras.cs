@@ -32,6 +32,13 @@ namespace HowToFishCustomMenu
             return false;
         }
         private bool PadMenuCombo() => Pad != null && Pad.leftShoulder.isPressed && Pad.dpad.up.wasPressedThisFrame;
+        private bool EmergencyMenuCombo() =>
+            (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
+            Input.GetKeyDown(KeyCode.Insert);
+        private bool MenuOpenPressed() =>
+            (menuKey.Value != KeyCode.None && Input.GetKeyDown(menuKey.Value)) ||
+            PadMenuCombo() ||
+            EmergencyMenuCombo();
 
         private bool NavUp() => Pressed(KeyCode.UpArrow) || (!PadMenuComboHeld() && PadRepeat(p => p.dpad.up));
         private bool NavDown() => Pressed(KeyCode.DownArrow) || PadRepeat(p => p.dpad.down);
@@ -48,6 +55,7 @@ namespace HowToFishCustomMenu
 
         private void BindKeys()
         {
+            announceChat = Config.Bind("Chat", "AnnounceKraken", false, "Allow KRAKEN to post automatic announcements in lobby chat");
             keySave = Config.Bind("Keys", "SaveLocation", KeyCode.F5, "Save your current location to the quick slot");
             keyLoad = Config.Bind("Keys", "LoadLocation", KeyCode.F6, "Teleport to the quick slot location");
             keySkyBase = Config.Bind("Keys", "SkyBase", KeyCode.F7, "Teleport to the sky base (builds it if needed)");
@@ -113,9 +121,31 @@ namespace HowToFishCustomMenu
             Row("LOAD PRESET 1", () => presetKeys[0]);
             Row("LOAD PRESET 2", () => presetKeys[1]);
             Row("LOAD PRESET 3", () => presetKeys[2]);
+            m.Action("RESET KEYBINDS", ResetKeybinds);
+            m.Label("Emergency open: CTRL + INSERT (cannot be rebound)");
             m.Label("Controller: LB + D-PAD UP opens the menu");
             m.Footer = "SPACE ON A ROW, THEN PRESS THE NEW KEY";
             return m;
+        }
+
+        private void ResetKeybinds()
+        {
+            menuKey.Value = KeyCode.Insert;
+            keySave.Value = KeyCode.F5;
+            keyLoad.Value = KeyCode.F6;
+            keySkyBase.Value = KeyCode.F7;
+            keyFly.Value = KeyCode.F8;
+            keyNoClip.Value = KeyCode.F9;
+            keyCar.Value = KeyCode.F10;
+            keyGod.Value = KeyCode.None;
+            if (presetKeys != null && presetKeys.Length >= 3)
+            {
+                presetKeys[0].Value = KeyCode.F11;
+                presetKeys[1].Value = KeyCode.None;
+                presetKeys[2].Value = KeyCode.None;
+            }
+            Config.Save();
+            Note("Keybinds reset // menu: INSERT // emergency: CTRL + INSERT");
         }
 
         // ---------------- Saved locations ----------------

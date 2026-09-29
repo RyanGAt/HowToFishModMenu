@@ -1,4 +1,4 @@
-# 🦑 KRAKEN v1.2.0 — Modded Lobby Edition
+# 🦑 KRAKEN v1.3.0 — Modded Lobby Edition
 
 An old-school Xbox 360 **Call of Duty-style mod menu** for ***How to Fish***.
 
@@ -30,7 +30,7 @@ It has a dark menu column with a blue header, a bright selection bar, ON/OFF tag
 
 To check it loaded, open `BepInEx\LogOutput.log`. It should contain:
 ```
-Loading [KRAKEN - Modded Lobby Edition 1.2.0]
+Loading [KRAKEN - Modded Lobby Edition 1.3.0]
 Harmony: 12/12 hooks active
 ```
 
@@ -49,6 +49,7 @@ Delete `BepInEx\plugins\HowToFishCustomMenu.dll`. To remove BepInEx completely, 
 | **← / →** | **D-pad Left / Right** | Change sliders and choices |
 | **Backspace** | **B** | Go back (B on the main page closes the menu) |
 | **Escape** | | Close the menu |
+| **Ctrl + Insert** | | Emergency open. It always works, even if you rebound the menu key. |
 
 - You can still **walk around** with the menu open. Jump, mouse look, shooting and item buttons are switched off while it's open so nothing fires by accident.
 - **Text rows** (money, item search, coordinates): press **Space** to start typing and **Enter** when you're done.
@@ -98,10 +99,10 @@ Aimbot · ADS Only · Snap / Smooth · 360 Aimbot · Target Prediction · **Sile
 *Targets fish and sea creatures only.*
 
 ### Weapon & Tool
-**Full Upgrade Held Gun** (max bullets, best barrel, extended mag, laser) · Cycle Sight · **No Recoil** · **Damage Multiplier (up to 50x)** · One Shot Kill Lobby · Unlimited Ammo · Instant Reload · Rapid Fire · No Cooldown · Zero Spread · Fast Projectiles · No Self Knockback · **Explosive Bullets** · **God Gun** (everything on) · Fish Launcher · Object Cannon · Super Knockback Blast · Spawn Explosion · Give All Weapons
+**Full Upgrade Held Gun** (max bullets, best barrel, extended mag, laser) · Cycle Sight · **No Recoil** · **No Sway** · **Big Laser** (longer, brighter laser sight) · **Custom Crosshair** (plus / dot / X, adjustable size) · **Damage Multiplier (up to 50x)** · One Shot Kill Lobby · Unlimited Ammo · Instant Reload · Rapid Fire · No Cooldown · Zero Spread · Fast Projectiles · No Self Knockback · **Explosive Bullets** · **God Gun** (everything on) · Fish Launcher · Object Cannon · Super Knockback Blast · Spawn Explosion · Give All Weapons
 
 ### Item Spawner
-**Searchable item list** · Quantity 1 / 10 / 100 · Spawn by Name / ID · Spawn Random Item · Spawn All Items · Give All Fishing Rods · Give All Equipment · Duplicate / Delete Held Item · Delete Nearby Items · Item Size · Item Value Multiplier · Item Rain
+**Searchable item list** (shows the match count, with a clear-search row) · Quantity 1 / 10 / 100 · Spawn by Name / ID · Spawn Random Item · Spawn All Items · Give All Fishing Rods · Give All Equipment · Duplicate / Delete Held Item · Delete Nearby Items · Item Size · Item Value Multiplier · Item Rain
 
 ### Teleport
 Save / Load Location · **Saved Locations** (kept after restart) · **Sky Base** · **Island Teleport** (one button per island) · Spawn · Water · Fishing Spot · Shop · Casino · Boat · **Any NPC** · Selected Player · Random · 100m Up · Under Map · Blink Forward · Coordinates
@@ -123,7 +124,8 @@ A floating oval on the sea with red and white kerbs, glowing barriers, a chequer
 - **Kill aura:** hits every creature in range (2–20m).
 - **Camera:** first person · **third person** (with a stand-in character) · **free cam** · **spectate target**.
 - **Presets:** save every toggle and slider into 3 slots and load one with a key.
-- **Chat kill-feed:** as host, KRAKEN posts classic modded-lobby messages in the game chat, and everyone sees them as **[Server]** messages: *"KRAKEN // HOST ENABLED GOD MODE"*, *"KRAKEN // Dave GOT FISH PRISON!"*, boss alerts and a welcome message.
+- **Chat kill-feed** (turn it on in Settings, off by default): as host, KRAKEN posts classic modded-lobby messages in the game chat, and everyone sees them as **[Server]** messages: *"KRAKEN // HOST ENABLED GOD MODE"*, *"KRAKEN // Dave GOT FISH PRISON!"*, boss alerts and a welcome message.
+- **Say KRAKEN in chat** posts a one-off message.
 - **Menu sounds** on/off.
 
 ### Players
@@ -153,7 +155,7 @@ Start / Stop · Interval · Random Player / World / Fish Effects · Extreme Chao
 **WARNING: ABSOLUTE FISH MAYHEM**
 
 ### Settings
-Menu Colour (COD Blue, Cyan, Green, Red, Purple, Orange, Pink) · Rainbow Menu · Menu Position (Right / Left / Centre) · Menu Scale · Fly Speed · **Keybinds** · Save Config
+Menu Colour (COD Blue, Cyan, Green, Red, Purple, Orange, Pink) · Rainbow Menu · Menu Position (Right / Left / Centre) · Menu Scale · Fly Speed · **Chat kill-feed / announcements** · **Keybinds** (with Reset Keybinds) · Save Config
 
 ---
 
@@ -190,7 +192,8 @@ See [`REVERSE_ENGINEERING.md`](HowToFishCustomMenu/REVERSE_ENGINEERING.md) for w
 
 ## ⚠️ Notes
 
-- Built and tested against How to Fish **1.0.12**. A game update can break hooks. If something stops working, check `BepInEx\LogOutput.log` for `Hook missing` lines.
+- Built against the How to Fish update from 29 September 2026 (the one that added bows and ground bait). Silent aim works on guns but not bows, because arrows don't use the bullet system.
+- Game updates can break hooks. If something stops working, check `BepInEx\LogOutput.log` for `Hook missing` lines.
 - Use it in **private lobbies with friends who are happy to play modded**. Don't use it to ruin strangers' games.
 - **Unlock All**, spawned items and money changes are saved into your world. Try them on a spare save first.
 - Spawning huge numbers of items can lag the lobby, so keep quantities sensible.
