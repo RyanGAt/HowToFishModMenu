@@ -17,12 +17,26 @@ namespace HowToFishCustomMenu
         // The host sends through the game's own OnlineChatManager ObserversRpc using the lobby
         // id as sender, so every player (modded or not) sees "[Server] KRAKEN // ...".
         private bool killFeed = true;
+        private ConfigEntry<bool> announceChat;
         private float nextChat;
         private void Announce(string text, bool force = false)
         {
+            if (announceChat == null || !announceChat.Value) return;
             if (!killFeed && !force) return;
             if (!Host || Time.unscaledTime < nextChat) return;
             nextChat = Time.unscaledTime + .35f; // don't flood the chat
+            try
+            {
+                var chat = global::OnlineChatManager.Instance;
+                ulong lobby = global::SteamManager.CurrentLobbyID.m_SteamID;
+                if (chat != null) chat.SendChatMessage(lobby, "KRAKEN // " + text);
+            }
+            catch (Exception ex) { Logger.LogWarning("Chat: " + ex.Message); }
+        }
+        private void SendChatNow(string text)
+        {
+            if (!Host || Time.unscaledTime < nextChat) return;
+            nextChat = Time.unscaledTime + .35f;
             try
             {
                 var chat = global::OnlineChatManager.Instance;
@@ -414,7 +428,7 @@ namespace HowToFishCustomMenu
             m.Slider("THIRD PERSON DISTANCE", () => thirdDistance, v => thirdDistance = v, 2f, 12f, .5f, "0.0m");
             m.Sub("PRESETS", PresetMenu);
             m.Toggle("CHAT KILL-FEED (HOST)", () => killFeed, v => killFeed = v);
-            m.Action("SAY KRAKEN IN CHAT", () => Announce("THIS LOBBY IS POWERED BY KRAKEN v" + Version, true), IsHostNow, NeedHost);
+            m.Action("SAY KRAKEN IN CHAT", () => SendChatNow("THIS LOBBY IS POWERED BY KRAKEN v" + Version), IsHostNow, NeedHost);
             m.Toggle("MENU SOUNDS", () => menuSounds, v => menuSounds = v);
             return m;
         }
