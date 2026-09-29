@@ -185,29 +185,38 @@ namespace HowToFishCustomMenu
                 crosshairPos = crosshairPos.x < 0f ? target : Vector2.Lerp(crosshairPos, target, Mathf.Clamp01(Time.unscaledDeltaTime * 25f));
             float cx = crosshairPos.x < 0f ? target.x : crosshairPos.x;
             float cy = crosshairPos.x < 0f ? target.y : crosshairPos.y;
-            float s = Mathf.Max(4f, crosshairSize);
+            // Scale with resolution, and draw a dark outline first so it shows on any background.
+            float k = Mathf.Max(1f, Screen.height / 1080f);
+            float s = Mathf.Max(4f, crosshairSize) * k;
             float t = Mathf.Max(2f, s * .16f);
             float gap = Mathf.Max(2f, s * .28f);
+            var outline = new Color(0f, 0f, 0f, .85f);
+            DrawCrosshairShape(cx, cy, s, t + 2f * k, gap - k, outline, k);
+            DrawCrosshairShape(cx, cy, s - k, t, gap, colour, 0f);
+        }
 
+        private void DrawCrosshairShape(float cx, float cy, float s, float t, float gap, Color c, float pad)
+        {
             if (crosshairStyle == 1)
             {
-                Rect(new Rect(cx - t, cy - t, t * 2f, t * 2f), colour);
+                float d = t * 1.6f;
+                Rect(new Rect(cx - d / 2f, cy - d / 2f, d, d), c);
                 return;
             }
-
             if (crosshairStyle == 2)
             {
-                Line(new Vector2(cx - s, cy - s), new Vector2(cx - gap, cy - gap), colour);
-                Line(new Vector2(cx + gap, cy + gap), new Vector2(cx + s, cy + s), colour);
-                Line(new Vector2(cx + gap, cy - gap), new Vector2(cx + s, cy - s), colour);
-                Line(new Vector2(cx - s, cy + gap), new Vector2(cx - gap, cy + s), colour);
+                for (int i = 0; i < 4; i++)
+                {
+                    float sx = (i & 1) == 0 ? -1 : 1, sy = (i & 2) == 0 ? -1 : 1;
+                    for (float w = -t / 2f; w <= t / 2f; w += 1f)
+                        Line(new Vector2(cx + sx * gap + w, cy + sy * gap), new Vector2(cx + sx * s + w, cy + sy * s), c);
+                }
                 return;
             }
-
-            Rect(new Rect(cx - t / 2f, cy - s, t, s - gap), colour);
-            Rect(new Rect(cx - t / 2f, cy + gap, t, s - gap), colour);
-            Rect(new Rect(cx - s, cy - t / 2f, s - gap, t), colour);
-            Rect(new Rect(cx + gap, cy - t / 2f, s - gap, t), colour);
+            Rect(new Rect(cx - t / 2f, cy - s - pad, t, s - gap + pad), c);
+            Rect(new Rect(cx - t / 2f, cy + gap, t, s - gap + pad), c);
+            Rect(new Rect(cx - s - pad, cy - t / 2f, s - gap + pad, t), c);
+            Rect(new Rect(cx + gap, cy - t / 2f, s - gap + pad, t), c);
         }
 
         private void DrawFeed(Color accent)
