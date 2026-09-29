@@ -141,6 +141,7 @@ namespace HowToFishCustomMenu
             m.Toggle("NO SWAY", () => noSway, v => noSway = v);
             m.Toggle("BIG LASER", () => bigLaser, v => bigLaser = v, held, "HOLD A WEAPON");
             m.Toggle("CUSTOM CROSSHAIR", () => crosshair, v => crosshair = v);
+            m.Toggle("CROSSHAIR FOLLOWS GUN AIM", () => crosshairFollowAim, v => crosshairFollowAim = v);
             m.Choice("CROSSHAIR STYLE", new[] { "PLUS", "DOT", "X" }, () => crosshairStyle, v => crosshairStyle = v);
             m.Slider("CROSSHAIR SIZE", () => crosshairSize, v => crosshairSize = v, 4f, 30f, 2f, "0");
             m.Slider("DAMAGE MULTIPLIER", () => damageMult, v => damageMult = v, 1f, 50f, 1f, "0x");

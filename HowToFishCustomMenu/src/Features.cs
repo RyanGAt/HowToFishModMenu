@@ -27,7 +27,7 @@ namespace HowToFishCustomMenu
         private bool noRecoil, instantReload;
         private float damageMult = 1f;
         private bool infiniteAmmo, rapidFire, noCooldown, zeroSpread, fastProjectiles, noWeaponKick, fishCannon, noSway, bigLaser;
-        private bool crosshair;
+        private bool crosshair, crosshairFollowAim = true;
         private int crosshairStyle;
         private float crosshairSize = 12f;
         private bool aimEnabled, aimAdsOnly = false, aimSmooth, aimWide, aimPrediction, triggerbot;

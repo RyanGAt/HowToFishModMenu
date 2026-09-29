@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HowToFishCustomMenu
@@ -145,10 +146,45 @@ namespace HowToFishCustomMenu
         }
         private bool SafeAvailable(Option o) { try { return o.Available(); } catch { return false; } }
 
+        private Vector2 crosshairPos = new Vector2(-1f, -1f);
+
+        // Where the held gun will actually hit. Weapon.Shoot fires from the barrel's FirePoint
+        // along its forward (not from screen centre), except scoped sniper shots, which use the camera.
+        private Vector2 AimScreenPoint()
+        {
+            var centre = new Vector2(Screen.width * .5f, Screen.height * .5f);
+            try
+            {
+                var player = global::Player.LocalPlayer;
+                var weapon = player != null && player.Holding != null && player.Holding.HeldItem != null ? player.Holding.HeldItem.Weapon : null;
+                var cam = GameCamera;
+                if (weapon == null || weapon.Attachments == null || cam == null) return centre;
+                var a = weapon.Attachments;
+                float aim = weapon.GetType().GetField("_aimPercent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.GetValue(weapon) is float f ? f : 0f;
+                if (a.UseSniperUi && aim > .9f) return centre;
+                var fire = a.FirePoint;
+                if (fire == null) return centre;
+                Vector3 point = fire.position + fire.forward * 150f;
+                foreach (var hit in Physics.RaycastAll(fire.position, fire.forward, 150f, global::GameInfo.ProjectileHitLayer.value, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance))
+                {
+                    if (hit.transform.IsChildOf(player.transform) || hit.transform.IsChildOf(weapon.transform)) continue; // skip your own body/gun
+                    point = hit.point;
+                    break;
+                }
+                var sp = ToScreen(cam, point);
+                return sp.z > 0f ? new Vector2(sp.x, sp.y) : centre;
+            }
+            catch { return centre; }
+        }
+
         private void DrawCrosshair(Color colour)
         {
-            float cx = Screen.width * .5f;
-            float cy = Screen.height * .5f;
+            // Follow the real aim point, smoothed a little so weapon sway doesn't make it jitter.
+            var target = crosshairFollowAim ? AimScreenPoint() : new Vector2(Screen.width * .5f, Screen.height * .5f);
+            if (Event.current.type == EventType.Repaint)
+                crosshairPos = crosshairPos.x < 0f ? target : Vector2.Lerp(crosshairPos, target, Mathf.Clamp01(Time.unscaledDeltaTime * 25f));
+            float cx = crosshairPos.x < 0f ? target.x : crosshairPos.x;
+            float cy = crosshairPos.x < 0f ? target.y : crosshairPos.y;
             float s = Mathf.Max(4f, crosshairSize);
             float t = Mathf.Max(2f, s * .16f);
             float gap = Mathf.Max(2f, s * .28f);
