@@ -8,7 +8,10 @@ namespace HowToFishCustomMenu
     {
         private object modifiedWeapon;
         private readonly Dictionary<string, object> originalWeaponValues = new Dictionary<string, object>();
-        private static readonly BindingFlags WeaponFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+        private readonly Dictionary<FieldInfo, KeyValuePair<object, object>> originalSwayValues = new Dictionary<FieldInfo, KeyValuePair<object, object>>();
+        private readonly Dictionary<UnityEngine.LineRenderer, float> originalLaserWidths = new Dictionary<UnityEngine.LineRenderer, float>();
+        private readonly Dictionary<UnityEngine.Light, float[]> originalLaserLights = new Dictionary<UnityEngine.Light, float[]>();
+        private static readonly BindingFlags WeaponFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 
         private object HeldWeapon()
         {
@@ -36,6 +39,8 @@ namespace HowToFishCustomMenu
                     catch (Exception) { /* A despawned weapon can no longer be restored. */ }
                 }
             }
+            RestoreSway();
+            RestoreBigLaser();
             modifiedWeapon = null;
             originalWeaponValues.Clear();
         }
@@ -51,9 +56,9 @@ namespace HowToFishCustomMenu
             return true;
         }
 
-        public void UpdateWeaponMods(bool infiniteAmmo, bool rapidFire, bool noCooldown, bool zeroSpread, bool fastProjectiles, bool noKick)
+        public void UpdateWeaponMods(bool infiniteAmmo, bool rapidFire, bool noCooldown, bool zeroSpread, bool fastProjectiles, bool noKick, bool noSway, bool bigLaser)
         {
-            if (!infiniteAmmo && !rapidFire && !noCooldown && !zeroSpread && !fastProjectiles && !noKick)
+            if (!infiniteAmmo && !rapidFire && !noCooldown && !zeroSpread && !fastProjectiles && !noKick && !noSway && !bigLaser)
             {
                 if (modifiedWeapon != null) ResetWeaponMods();
                 return;
@@ -82,6 +87,120 @@ namespace HowToFishCustomMenu
             SetWeaponField(weapon, "_recoilKnockback", 0, noKick);
             SetWeaponField(weapon, "_noShootingDuringShootAnim", false, noCooldown);
             if (noCooldown) weapon.GetType().GetField("_hasCoolDown", WeaponFlags)?.SetValue(weapon, false);
+            ApplyNoSway(weapon, noSway);
+            ApplyBigLaser(weapon, bigLaser);
+        }
+
+        private void ApplyNoSway(object weapon, bool enabled)
+        {
+            if (!enabled)
+            {
+                RestoreSway();
+                return;
+            }
+
+            ZeroSwayFields(weapon);
+            ZeroSwayFields(GetMember(weapon, "Attachments"));
+        }
+
+        private void ZeroSwayFields(object target)
+        {
+            if (target == null) return;
+            foreach (var field in target.GetType().GetFields(WeaponFlags))
+            {
+                if (field.Name.IndexOf("sway", StringComparison.OrdinalIgnoreCase) < 0) continue;
+                try
+                {
+                    if (!originalSwayValues.ContainsKey(field))
+                        originalSwayValues[field] = new KeyValuePair<object, object>(target, field.GetValue(target));
+
+                    if (field.FieldType == typeof(float)) field.SetValue(target, 0f);
+                    else if (field.FieldType == typeof(double)) field.SetValue(target, 0d);
+                    else if (field.FieldType == typeof(UnityEngine.Vector2)) field.SetValue(target, UnityEngine.Vector2.zero);
+                    else if (field.FieldType == typeof(UnityEngine.Vector3)) field.SetValue(target, UnityEngine.Vector3.zero);
+                }
+                catch { }
+            }
+        }
+
+        private void RestoreSway()
+        {
+            foreach (var pair in originalSwayValues)
+            {
+                try { pair.Key.SetValue(pair.Value.Key, pair.Value.Value); }
+                catch { }
+            }
+            originalSwayValues.Clear();
+        }
+
+        private static bool LooksLikeLaser(UnityEngine.Component c)
+        {
+            if (c == null) return false;
+            string n = c.gameObject != null ? c.gameObject.name : c.name;
+            if (!string.IsNullOrEmpty(n) && (n.IndexOf("laser", StringComparison.OrdinalIgnoreCase) >= 0 || n.IndexOf("sight", StringComparison.OrdinalIgnoreCase) >= 0))
+                return true;
+            var renderer = c as UnityEngine.Renderer;
+            try
+            {
+                var mat = renderer != null ? renderer.sharedMaterial : null;
+                return mat != null && mat.name.IndexOf("laser", StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+            catch { return false; }
+        }
+
+        private void ApplyBigLaser(object weapon, bool enabled)
+        {
+            if (!enabled)
+            {
+                RestoreBigLaser();
+                return;
+            }
+
+            var component = weapon as UnityEngine.Component;
+            if (component == null) return;
+
+            foreach (var line in component.GetComponentsInChildren<UnityEngine.LineRenderer>(true))
+            {
+                if (!LooksLikeLaser(line)) continue;
+                if (!originalLaserWidths.ContainsKey(line)) originalLaserWidths[line] = line.widthMultiplier;
+                float original = originalLaserWidths[line];
+                line.widthMultiplier = UnityEngine.Mathf.Max(original * 3f, .025f);
+            }
+
+            foreach (var light in component.GetComponentsInChildren<UnityEngine.Light>(true))
+            {
+                if (!LooksLikeLaser(light)) continue;
+                if (!originalLaserLights.ContainsKey(light))
+                    originalLaserLights[light] = new[] { light.range, light.intensity, light.spotAngle };
+                var original = originalLaserLights[light];
+                light.range = original[0] * 2.5f;
+                light.intensity = original[1] * 1.5f;
+                if (light.type == UnityEngine.LightType.Spot)
+                    light.spotAngle = UnityEngine.Mathf.Min(179f, original[2] * 1.5f);
+            }
+        }
+
+        private void RestoreBigLaser()
+        {
+            foreach (var pair in originalLaserWidths)
+            {
+                try { if (pair.Key != null) pair.Key.widthMultiplier = pair.Value; }
+                catch { }
+            }
+            originalLaserWidths.Clear();
+
+            foreach (var pair in originalLaserLights)
+            {
+                try
+                {
+                    if (pair.Key == null) continue;
+                    pair.Key.range = pair.Value[0];
+                    pair.Key.intensity = pair.Value[1];
+                    pair.Key.spotAngle = pair.Value[2];
+                }
+                catch { }
+            }
+            originalLaserLights.Clear();
         }
 
         // Host only: attachment/bullet levels are server SyncVars, so this writes them directly.
