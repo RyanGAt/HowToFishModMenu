@@ -41,6 +41,8 @@ namespace HowToFishCustomMenu
             }
             RestoreSway();
             RestoreBigLaser();
+            RestoreSway();
+            RestoreBigLaser();
             modifiedWeapon = null;
             originalWeaponValues.Clear();
         }
