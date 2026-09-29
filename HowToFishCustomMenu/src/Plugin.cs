@@ -138,7 +138,7 @@ namespace HowToFishCustomMenu
         // ---------------- Frame loop ----------------
         private void Update()
         {
-            if (capturing == null && (Input.GetKeyDown(menuKey.Value) || PadMenuCombo())) SetOpen(!shown);
+            if (capturing == null && MenuOpenPressed()) SetOpen(!shown);
             try { TickHotkeys(); } catch (Exception ex) { Logger.LogWarning("Hotkeys: " + ex.Message); }
             if (shown)
             {
