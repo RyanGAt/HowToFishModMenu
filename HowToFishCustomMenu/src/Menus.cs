@@ -203,23 +203,43 @@ namespace HowToFishCustomMenu
         {
             if (itemList != null) return itemList;
             var m = itemList = new Menu("ITEM LIST");
-            var search = new Option { Kind = OptionKind.Input, Name = "SEARCH", GetText = () => itemSearch, SetText = v => itemSearch = v };
+            var search = new Option
+            {
+                Kind = OptionKind.Input,
+                NameFn = () => string.IsNullOrWhiteSpace(itemSearch) ? "SEARCH" : "SEARCH: " + itemSearch.ToUpperInvariant(),
+                GetText = () => itemSearch,
+                SetText = v => itemSearch = v
+            };
             List<KeyValuePair<string, object>> cache = null;
             m.Dynamic = () =>
             {
                 if (cache == null || cache.Count == 0) cache = Bridge.Spawnables();
                 var rows = new List<Option> { search };
                 string q = itemSearch.Replace(" ", "").ToLowerInvariant();
-                foreach (var p in cache)
+                var matches = cache.Where(p => q.Length == 0 || p.Key.Contains(q)).ToList();
+
+                if (!string.IsNullOrWhiteSpace(itemSearch))
+                    rows.Add(new Option { Kind = OptionKind.Action, Name = "CLEAR SEARCH  (" + matches.Count + " MATCHES)", OnSelect = () => itemSearch = "" });
+                else
+                    rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count + " ITEMS" });
+
+                foreach (var p in matches)
                 {
-                    if (q.Length > 0 && !p.Key.Contains(q)) continue;
                     var prefab = p.Value;
-                    rows.Add(new Option { Kind = OptionKind.Action, Name = p.Key.ToUpperInvariant(), OnSelect = () => { QueueSpawn(prefab, spawnQty); Note("Spawning " + spawnQty + " x " + p.Key); } });
+                    var key = p.Key;
+                    rows.Add(new Option
+                    {
+                        Kind = OptionKind.Action,
+                        Name = key.ToUpperInvariant(),
+                        OnSelect = () => { QueueSpawn(prefab, spawnQty); Note("Spawning " + spawnQty + " x " + key); }
+                    });
                 }
-                if (rows.Count == 1) rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count == 0 ? "Item list not loaded yet" : "No matches" });
+
+                if (matches.Count == 0)
+                    rows.Add(new Option { Kind = OptionKind.Label, Name = cache.Count == 0 ? "Item list not loaded yet" : "No matches" });
                 return rows;
             };
-            m.Footer = "SPACE ON SEARCH TO TYPE";
+            m.Footer = "SPACE ON SEARCH TO TYPE  //  BACKSPACE EDITS";
             return m;
         }
 
