@@ -138,6 +138,11 @@ namespace HowToFishCustomMenu
             m.Action("FULL UPGRADE HELD GUN [HOST]", () => { var err = Bridge.FullUpgrade(); Note(err == null ? "Gun fully upgraded: max bullets, best barrel, extended mag, laser" : "Full upgrade // " + err); }, IsHostNow, NeedHost);
             m.Action("CYCLE SIGHT [HOST]", () => { var err = Bridge.CycleSight(); Note(err == null ? "Sight changed" : "Sight // " + err); }, IsHostNow, NeedHost);
             m.Toggle("NO RECOIL", () => noRecoil, v => noRecoil = v);
+            m.Toggle("NO SWAY", () => noSway, v => noSway = v);
+            m.Toggle("BIG LASER", () => bigLaser, v => bigLaser = v, held, "HOLD A WEAPON");
+            m.Toggle("CUSTOM CROSSHAIR", () => crosshair, v => crosshair = v);
+            m.Choice("CROSSHAIR STYLE", new[] { "PLUS", "DOT", "X" }, () => crosshairStyle, v => crosshairStyle = v);
+            m.Slider("CROSSHAIR SIZE", () => crosshairSize, v => crosshairSize = v, 4f, 30f, 2f, "0");
             m.Slider("DAMAGE MULTIPLIER", () => damageMult, v => damageMult = v, 1f, 50f, 1f, "0x");
             m.Toggle("ONE SHOT KILL LOBBY [HOST]", () => Bridge.OneShotLobby, v => Bridge.OneShotLobby = v, IsHostNow, NeedHost);
             m.Toggle("UNLIMITED AMMO", () => infiniteAmmo, v => infiniteAmmo = v);
