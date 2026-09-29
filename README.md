@@ -1,4 +1,4 @@
-# 🦑 KRAKEN v1.3.0 — Modded Lobby Edition
+# 🦑 KRAKEN v1.2.1 — Modded Lobby Edition
 
 An old-school Xbox 360 **Call of Duty-style mod menu** for ***How to Fish***.
 
@@ -30,7 +30,7 @@ It has a dark menu column with a blue header, a bright selection bar, ON/OFF tag
 
 To check it loaded, open `BepInEx\LogOutput.log`. It should contain:
 ```
-Loading [KRAKEN - Modded Lobby Edition 1.3.0]
+Loading [KRAKEN - Modded Lobby Edition 1.2.1]
 Harmony: 12/12 hooks active
 ```
 
