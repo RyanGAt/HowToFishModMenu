@@ -55,6 +55,7 @@ namespace HowToFishCustomMenu
 
         private void BindKeys()
         {
+            announceChat = Config.Bind("Chat", "AnnounceKraken", false, "Allow KRAKEN to post automatic announcements in lobby chat");
             keySave = Config.Bind("Keys", "SaveLocation", KeyCode.F5, "Save your current location to the quick slot");
             keyLoad = Config.Bind("Keys", "LoadLocation", KeyCode.F6, "Teleport to the quick slot location");
             keySkyBase = Config.Bind("Keys", "SkyBase", KeyCode.F7, "Teleport to the sky base (builds it if needed)");
